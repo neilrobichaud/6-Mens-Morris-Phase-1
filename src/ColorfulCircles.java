@@ -25,7 +25,7 @@ public class ColorfulCircles extends Application {
 	private boolean duplicate = false;
 	private boolean numPieces = false;
 	private boolean isSbox = false;
-	
+	private String lastcolor = "white";
 	private String pickedcolor = "black";
 	@Override
 	public void start(Stage primaryStage) {
@@ -40,8 +40,7 @@ public class ColorfulCircles extends Application {
 	private class Point extends StackPane{
 		double x,y;
 		double sizenode = 10; 	
-		Color nodecolor = Color.BLACK;
-		private String lastcolor = "white";
+		Color nodecolor = Color.BLACK;		
 		public Point(double x, double y){
 			this.x =x;
 			this.y =y;
@@ -138,8 +137,8 @@ public class ColorfulCircles extends Application {
 						}
 						else{
 							circle.setFill(Color.RED);
-						redCount++;
-						lastcolor = "red";
+							redCount++;
+							lastcolor = "red";
 						}
 					}
 					
@@ -153,8 +152,8 @@ public class ColorfulCircles extends Application {
 						}
 						else{
 							circle.setFill(Color.BLUE);
-						blueCount++;
-						lastcolor = "blue";
+							blueCount++;
+							lastcolor = "blue";
 						}
 					}										
 					
