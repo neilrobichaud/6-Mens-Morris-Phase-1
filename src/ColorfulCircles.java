@@ -76,29 +76,7 @@ public class ColorfulCircles extends Application {
 							blueCount++;
 							
 						}
-						if (pickedcolor == "isValid") {
-							if (duplicate == true && numPieces == false) {
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("You cannot place one piece on top of another");
-								alert.setContentText("Please try again");
-								alert.showAndWait();
-							}
-							else if (duplicate == false && numPieces == true) {
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("You cannot place more than 6 pieces");
-								alert.setContentText("Please try using another color");
-								alert.showAndWait();
-							}
-							else {
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("You cannot place one piece on top of another and you cannot place more than 6 pieces");
-								alert.setContentText("Please try again");
-								alert.showAndWait();
-							}
-						}
+						
 						
 					}
 					else {
@@ -237,7 +215,20 @@ public class ColorfulCircles extends Application {
 		validButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent arg0){
-				pickedcolor = "isValid";	
+				if (numPieces==true || duplicate ==true){
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Information Dialog");
+					alert.setHeaderText("The sequence of pieces you placed was not valid");
+					alert.setContentText("");
+					alert.showAndWait();
+				}
+				else {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Information Dialog");
+					alert.setHeaderText("The sequence of pieces you placed was valid");
+					alert.setContentText("");
+					alert.showAndWait();
+				}	
 			}
 		});
 
@@ -249,7 +240,7 @@ public class ColorfulCircles extends Application {
 		sboxButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent arg0){				
-				pickedcolor = "sBox";	
+				pickedcolor = "sBox";
 			}
 		});
 
