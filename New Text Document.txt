@@ -1,0 +1,30 @@
+private boolean PlayerTurn=true;//true for blue,false for red
+    private String[][] PlaceArray=new String[2][8];//this changes depending on the board size
+    private int Phase=0;//Phase 0 for menu screen?
+    public void newGame(){
+    	int randomnum=(int)(Math.random());
+    	if(randomnum==0)PlayerTurn=true;//blue
+    	else PlayerTurn=false;//red
+    }
+    public void StartTurn(boolean PlayerTurn){
+    	if(PlayerTurn==true)PlayerTurn=false;
+    	else PlayerTurn=true;
+    	checkPhase();
+    }
+    
+    public void checkPhase(){
+    	int nullcount=0;
+    	for(int i=0;i<PlaceArray.length;i++){
+    		for(int j=0;j<PlaceArray[i].length;j++){
+    			if(PlaceArray[i]==null){
+    				nullcount++;
+    			}
+    		}
+    	}
+    	if(nullcount>4){//4 nullcount means all the 6 pieces are placed by both players on the board, this changes depending on the board size
+    		//Phase=1;//phase1 continues
+    	}
+    	else{
+    		//Phase=2;//initiate phase2
+    	}
+    

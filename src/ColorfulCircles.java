@@ -41,7 +41,7 @@ public class ColorfulCircles extends Application {
 		double x,y;
 		double sizenode = 10; 	
 		Color nodecolor = Color.BLACK;
-		boolean canplace=true;
+		private String lastcolor = "white";
 		public Point(double x, double y){
 			this.x =x;
 			this.y =y;
@@ -128,17 +128,38 @@ public class ColorfulCircles extends Application {
 						alert.showAndWait();
 
 					}
-					else if (pickedcolor == "red"){                		
-						circle.setFill(Color.RED);
+					else if (pickedcolor == "red"){ 
+						if (lastcolor.equals("red")){												//for regular play, cannot place two of the same piece in a row
+							Alert alert = new Alert(AlertType.INFORMATION);
+							alert.setTitle("Information Dialog");
+							alert.setHeaderText("It is the blue players turn");
+							alert.setContentText("Please try using another color");
+							alert.showAndWait();
+						}
+						else{
+							circle.setFill(Color.RED);
 						redCount++;
-						
+						lastcolor = "red";
+						}
 					}
-					else if (pickedcolor == "blue"){                		
-						circle.setFill(Color.BLUE);
+					
+					else if(pickedcolor == "blue"){												//for regular play, cannot place two of the same piece in a row
+						if (lastcolor.equals("blue")){
+							Alert alert = new Alert(AlertType.INFORMATION);
+							alert.setTitle("Information Dialog");
+							alert.setHeaderText("It is the red players turn");
+							alert.setContentText("Please try using another color");
+							alert.showAndWait();
+						}
+						else{
+							circle.setFill(Color.BLUE);
 						blueCount++;
-						
+						lastcolor = "blue";
+						}
+					}										
+					
 					}
-					}
+					
 				}
 				
 				
@@ -243,4 +264,5 @@ public class ColorfulCircles extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
 }
