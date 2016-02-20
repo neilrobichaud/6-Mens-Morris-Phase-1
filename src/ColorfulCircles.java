@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,10 +21,12 @@ import javafx.stage.Stage;
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
 public class ColorfulCircles extends Application {
+	private static int numMensMorris=6;	//variable to store the number of mens morris ie. 6
 	
 	private boolean PlayerTurn=true;
-	private int redCount = 1;
-	private int blueCount = 1;
+	private static int redCount = 0;
+	private static int blueCount = 0;
+	private static String[][] boardState;
 	private boolean duplicate = false;
 	private boolean numPieces = false;
 	private boolean rmPiece=false;
@@ -46,21 +50,28 @@ public class ColorfulCircles extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		initxycheck();
-		Scene scene1 = new Scene(shellmaker(2),800,600,Color.BEIGE);
+		Scene scene1 = new Scene(shellmaker(numMensMorris/3),800,600,Color.BEIGE);
 		primaryStage.setScene(scene1);	
 		primaryStage.setTitle("6 mens morris");
 		primaryStage.show();      
 
 	}
+	public void check(Point x){
+		
+	}
 
 	private class Point extends StackPane{
 		double x,y;
 		double sizenode = 10; 	
-		Color nodecolor = Color.BLACK;		
+		Circle circle;
+		Color nodecolor = Color.BLACK;	
+		private void changeNodeColor(Color x){									//method to change the color of a given node
+			circle.setFill(x);
+		}
 		public Point(double x, double y){
 			this.x =x;
 			this.y =y;
-			Circle circle = new Circle (x, y, sizenode, nodecolor);
+			circle = new Circle (x, y, sizenode, nodecolor);
 			setTranslateX(x);
 			setTranslateY(y);
 			getChildren().addAll(circle);    
@@ -77,10 +88,10 @@ public class ColorfulCircles extends Application {
 							duplicate = true;
 						}
 						//check for placing more than 6 pieces in total 
-						else if (redCount >6 && pickedcolor == "red") {
+						else if (redCount >numMensMorris && pickedcolor == "red") {
 							numPieces = true;
 						}
-						else if (blueCount> 6 && pickedcolor == "blue") {
+						else if (blueCount> numMensMorris && pickedcolor == "blue") {
 							numPieces = true;
 						}
 						if (pickedcolor == "red"){                		
@@ -99,7 +110,7 @@ public class ColorfulCircles extends Application {
 					else if(rmPiece==true){
 						if(pickedcolor.equals("removered")){
 							if(circle.getFill()==Color.RED){
-								circle.setFill(Color.BLACK);
+								circle.setFill(Color.BLACK);								
 								rmPiece=false;
 								StartTurn();
 								removeFromArray(circle.getCenterX(),circle.getCenterY());
@@ -140,7 +151,7 @@ public class ColorfulCircles extends Application {
 						alert.showAndWait();
 
 					}
-					else if(redCount>6&&blueCount>6){
+					else if(redCount>=numMensMorris&&blueCount>=numMensMorris){
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setTitle("Information Dialog");
 						alert.setHeaderText("Phase 1 has ended");
@@ -148,7 +159,7 @@ public class ColorfulCircles extends Application {
 						alert.showAndWait();
 					}
 					//check for placing more than 6 pieces in total 
-					else if (redCount >6 && pickedcolor == "red") {
+					else if (redCount >numMensMorris && pickedcolor == "red") {
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setTitle("Information Dialog");
 						alert.setHeaderText("You cannot place more than 6 pieces");
@@ -156,7 +167,7 @@ public class ColorfulCircles extends Application {
 						alert.showAndWait();
 
 					}
-					else if (blueCount> 6 && pickedcolor == "blue") {
+					else if (blueCount> numMensMorris && pickedcolor == "blue") {
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setTitle("Information Dialog");
 						alert.setHeaderText("You cannot place more than 6 pieces");
@@ -193,7 +204,7 @@ public class ColorfulCircles extends Application {
 							StartTurn();
 							//System.out.println(pickedcolor);
 							lastcolor = "red";
-							if(redCount>6&&blueCount>6){
+							if(redCount>numMensMorris&&blueCount>numMensMorris){
 								Alert alert = new Alert(AlertType.INFORMATION);
 								alert.setTitle("Information Dialog");
 								alert.setHeaderText("Phase 1 has ended");
@@ -233,7 +244,7 @@ public class ColorfulCircles extends Application {
 							StartTurn();
 							//System.out.println(pickedcolor);
 							lastcolor = "blue";
-							if(redCount>6&&blueCount>6){
+							if(redCount>numMensMorris&&blueCount>numMensMorris){
 								Alert alert = new Alert(AlertType.INFORMATION);
 								alert.setTitle("Information Dialog");
 								alert.setHeaderText("Phase 1 has ended");
@@ -492,7 +503,7 @@ public class ColorfulCircles extends Application {
 
 		Group nodes = new Group(); 
 		for (int shell=1;shell<shellnum+1;shell++){
-			for (int j=0;j<8;j++){	        	
+			       	
 
 				Point point0 = new Point (startX-spacing*shell, startY-spacing*shell);        		      		
 				nodes.getChildren().add(point0);
@@ -527,7 +538,7 @@ public class ColorfulCircles extends Application {
 				Line line0 = new Line (point0.x+10, point0.y+10,point7.x+10,point7.y+10);  
 				nodes.getChildren().addAll(line7,line0, point7);
 
-			}}
+			}
 		Button redbutton = new Button("Place a red piece");
 		redbutton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
@@ -674,7 +685,20 @@ public class ColorfulCircles extends Application {
     }
 
 	public static void main(String[] args) {
+		createBoard(6);										//create the board model
 		launch(args);
+		
+	}
+	public static void updateBoard(){
+		
+		
+	}
+	public static void createBoard(int x){	//will create the model for the board
+		numMensMorris = x;					//sets the global mens morris variable
+	    redCount=0;
+	    blueCount=0;
+	    boardState = new String[numMensMorris][8];	//3d array, each entry is a list which represents an entire square. for exampe boardState[0][2] would be the top right corner of the inner most shell.   
+			
 	}
 	
 }
