@@ -22,7 +22,8 @@ import javafx.stage.Stage;
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
 public class ColorfulCircles extends Application {
 	private static int numMensMorris=6;	//variable to store the number of mens morris ie. 6
-	
+	private static Circle[] bluepiecelist;
+	private static Circle[] redpiecelist;
 	private boolean PlayerTurn=true;
 	private static int redCount = 0;
 	private static int blueCount = 0;
@@ -110,6 +111,7 @@ public class ColorfulCircles extends Application {
 					else if(rmPiece==true){
 						if(pickedcolor.equals("removered")){
 							if(circle.getFill()==Color.RED){
+								redpiecelist[redCount-1].setFill(Color.RED);
 								circle.setFill(Color.BLACK);								
 								rmPiece=false;
 								StartTurn();
@@ -128,6 +130,7 @@ public class ColorfulCircles extends Application {
 						else{
 							if(circle.getFill()==Color.BLUE){
 								circle.setFill(Color.BLACK);
+								bluepiecelist[blueCount-1].setFill(Color.BLUE);
 								rmPiece=false;
 								StartTurn();
 								removeFromArray(circle.getCenterX(),circle.getCenterY());
@@ -186,6 +189,7 @@ public class ColorfulCircles extends Application {
 						}
 						else{
 							circle.setFill(Color.RED);
+							redpiecelist[0+redCount].setFill(Color.BEIGE);
 							redCount++;
 							
 							addToArrays(circle.getCenterX(),circle.getCenterY());
@@ -225,6 +229,7 @@ public class ColorfulCircles extends Application {
 						}
 						else{
 							circle.setFill(Color.BLUE);
+							bluepiecelist[0+blueCount].setFill(Color.BEIGE);
 							blueCount++;
 							addToArrays(circle.getCenterX(),circle.getCenterY());
 							//System.out.println(circle.getCenterX()+" "+circle.getCenterY());
@@ -571,7 +576,7 @@ public class ColorfulCircles extends Application {
 			}
 		});
 		nodes.getChildren().add(redbutton);
-
+		
 		Button bluebutton = new Button("Place a blue piece");
 		 
 		bluebutton.setTranslateY(30);
@@ -593,6 +598,19 @@ public class ColorfulCircles extends Application {
 		});
 
 		nodes.getChildren().add(bluebutton);
+		Circle sidepiece;
+		Circle sidepiece1;
+		Color sidepiececolor=Color.BLUE;
+		redpiecelist = new Circle[numMensMorris];
+		bluepiecelist=new Circle[numMensMorris];
+		for (int i=0;i<numMensMorris;i++){
+			sidepiece = new Circle (100+20*i, 200, 10, sidepiececolor);
+			sidepiece1 = new Circle (100+20*i, 400, 10, Color.RED);
+			bluepiecelist[i]=sidepiece;
+			redpiecelist[i]=sidepiece1;
+			
+			nodes.getChildren().addAll(sidepiece,sidepiece1);
+		}
 		
 		
 		Button newgame = new Button("New Game");
