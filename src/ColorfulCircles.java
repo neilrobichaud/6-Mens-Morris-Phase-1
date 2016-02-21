@@ -500,7 +500,10 @@ public class ColorfulCircles extends Application {
 		double startX = 400;
 		double startY = 300;
 		double spacing = 60;
-
+		Line line31;
+		Line line71;
+		Line line11;
+		Line line51;
 		Group nodes = new Group(); 
 		for (int shell=1;shell<shellnum+1;shell++){
 			       	
@@ -518,8 +521,20 @@ public class ColorfulCircles extends Application {
 				nodes.getChildren().addAll(line2,point2);
 
 				Point point3 = new Point (startX+spacing*shell, startY);
+				if (shell < shellnum){
+					line31 = new Line(startX+spacing*shell+10, startY+10,startX+spacing*(shell+1), startY+10);
+					line71 = new Line(startX-spacing*shell+10, startY+10,startX-spacing*(shell+1), startY+10);
+					line11 = new Line(startX+10, startY-spacing*shell+10,startX+10, startY-spacing*(shell+1)+10);
+					line51 = new Line(startX+10, startY+spacing*shell+10,startX+10, startY+spacing*(shell+1)+10);
+					}
+				else{
+					line31 = new Line(0,0,0,0);
+					line71 = new Line(0,0,0,0);
+					line11 = new Line(0,0,0,0);
+					line51 = new Line(0,0,0,0);
+					}
 				Line line3 = new Line(point2.x+10,point2.y+10,point3.x+10,point3.y+10);
-				nodes.getChildren().addAll(line3,point3);
+				nodes.getChildren().addAll(line3,line31,line71,line11,line51,point3);
 
 				Point point4 = new Point (startX+spacing*shell, startY+spacing*shell);
 				Line line4 = new Line(point3.x+10,point3.y+10,point4.x+10,point4.y+10);
