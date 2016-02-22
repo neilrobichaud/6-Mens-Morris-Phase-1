@@ -7,26 +7,26 @@ import javafx.scene.shape.Circle;
 
 
 public class Point extends StackPane{
-		double x,y;
-		double sizenode = 10; 	
-		Circle circle;
-		Color nodecolor = Color.BLACK;
+		double x,y;						//the points coordinates
+		double sizenode = 10; 			//the size of the circle
+		Circle circle;					//declare a circle
+		Color nodecolor = Color.BLACK;	//color is black
 
-		public Point(double x, double y){
-			this.x =x;
+		public Point(double x, double y){		//constructor
+			this.x =x;							//set x and y
 			this.y =y;
-			circle = new Circle (x, y, sizenode, nodecolor);
-			setTranslateX(x);
+			circle = new Circle (sizenode, nodecolor);	//create a new circle
+			setTranslateX(x);									//translate it 
 			setTranslateY(y);
-			getChildren().addAll(circle);    
+			getChildren().addAll(circle);    					//add to point
 			
-			setOnMouseClicked(new EventHandler<MouseEvent>()    		
+			setOnMouseClicked(new EventHandler<MouseEvent>()   //if point is clicked 		
 			{
 
 				@Override
-				public void handle(MouseEvent t) {
-					// checks Model.duplicate placing
-					Controller.pointclicked(circle);		
+				public void handle(MouseEvent t) {				
+					// checks Model.duplicate placing	
+					Controller.pointclicked(circle);			//calls controller method	
 					}    	
 			});
 		}

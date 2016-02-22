@@ -10,23 +10,30 @@ import javafx.scene.shape.Line;
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
 public class Model {
-	static Button redbutton;
 	public static int numMensMorris=6;	//variable to store the number of mens morris ie. 6
-	public static Point[][] boardState;
-	public static Circle[] bluepiecelist;
-	public static Circle[] redpiecelist;
-	public static boolean PlayerTurn=true;
-	public static int redCount = 0;
+	private static Point[][] boardState;		//2D array; inner arrays represent individual shells, outer array holds all shells
+	private static Circle[] bluepiecelist;	//keeps track of pieces on side of the board
+	private static Circle[] redpiecelist;
+	public static boolean PlayerTurn=true;	//true=blue false=red
+	public static int redCount = 0;			//counts number of red pieces currently placed
 	public static int blueCount = 0;	
-	public static boolean duplicate = false;
-	public static boolean numPieces = false;
-	public static boolean rmPiece=false;
-	public static boolean NewGame=false;
-	public static boolean isSbox = false;
-	public static String lastcolor = "white";
-	public static String pickedcolor = "black";
+	public static boolean duplicate = false;	//for Sandbox mode to check if duplicates have been placed
+	public static boolean numPieces = false;	//for sandbox mode to check if too many pieces have been placed
+	public static boolean rmPiece=false;		//when a mill is formed and a piece must be removed
+	public static boolean NewGame=false;		//to keep track of whether newgame has been pressed
+	public static boolean isSbox = false;		//is sandbox to keep track of whether it is in sandbox mode
+	public static String lastcolor = "white";	//the last color picked
+	public static String pickedcolor = "black";	//the color currently selected
 	public static String [][][]xycheck=new String[2][4][3];//[0][][] for x [1][][] for y
-	
+	public static Circle getbluepiecelist(int i){
+		return bluepiecelist[i];
+	}
+	public static Circle getredpiecelist(int i){
+		return redpiecelist[i];
+	}
+	public static Point getboardState(int i, int j){
+		return boardState[i][j];
+	}
 	public static void initxycheck(){//for various purposes, get rid of nulls when initialized
 		for(int i=0;i<xycheck.length;i++){
 			for(int j=0;j<xycheck[i].length;j++){
@@ -269,19 +276,19 @@ public class Model {
 		return millfound;
 	}
 	// just for making the board and placing the lines
-	public static Group shellmaker(int shellnum){
-		boardState=new Point[shellnum][8];
-		double startX = 400;
+	public static Group shellmaker(int shellnum){	//creates the model for the board
+		boardState=new Point[shellnum][8];			//initialize the board array
+		double startX = 400;						//board size
 		double startY = 300;
 		double spacing = 60;
 		Line line31;		//the four lines that connect the midpoints for each shell
 		Line line71;
 		Line line11;
 		Line line51;
-		Group nodes = new Group(); 
-		for (int shell=1;shell<shellnum+1;shell++){			       	
+		Group nodes = new Group(); 					
+		for (int shell=1;shell<shellnum+1;shell++){				//loop for the number of shells you want		       	
 
-				Point point0 = new Point (startX-spacing*shell, startY-spacing*shell);
+				Point point0 = new Point (startX-spacing*shell, startY-spacing*shell);	//create a point and store it
 				boardState[shell-1][0]=point0;
 				Point point1 = new Point (startX, startY-spacing*shell);
 				boardState[shell-1][1]=point1;
@@ -299,7 +306,7 @@ public class Model {
 				boardState[shell-1][7]=point7;
 				nodes.getChildren().addAll(point0,point1,point2,point3,point4,point5,point6,point7);//add all points to group
 				if (shell < shellnum){
-					line31 = new Line(startX+spacing*shell+10, startY+10,startX+spacing*(shell+1), startY+10);
+					line31 = new Line(startX+spacing*shell+10, startY+10,startX+spacing*(shell+1), startY+10);	//create lines between the points
 					line71 = new Line(startX-spacing*shell+10, startY+10,startX-spacing*(shell+1), startY+10);
 					line11 = new Line(startX+10, startY-spacing*shell+10,startX+10, startY-spacing*(shell+1)+10);
 					line51 = new Line(startX+10, startY+spacing*shell+10,startX+10, startY+spacing*(shell+1)+10);
@@ -321,14 +328,14 @@ public class Model {
 				Line line0 = new Line (point0.x+10, point0.y+10,point7.x+10,point7.y+10);  
 				nodes.getChildren().addAll(line0,line1,line2,line3,line4,line5,line6,line7,line31,line11,line51,line71);
 			}
-		redbutton = new Button("Place a red piece");
+		Button redbutton = new Button("Place a red piece");		//create red piece button for sandbox
 		redbutton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent arg0){				
-				Controller.redbutton();
+				Controller.redbutton();							//call controller method for redbutton
 			}
 		});
-		nodes.getChildren().add(redbutton);
+		nodes.getChildren().add(redbutton);						//add button to group
 		
 		Button bluebutton = new Button("Place a blue piece");
 		 
@@ -345,9 +352,9 @@ public class Model {
 		Circle sidepiece;						//the pieces on the side of the board
 		Circle sidepiece1;
 		Color sidepiececolor=Color.BLUE;
-		redpiecelist = new Circle[numMensMorris];
+		redpiecelist = new Circle[numMensMorris];		//start piecelist
 		bluepiecelist=new Circle[numMensMorris];
-		for (int i=0;i<numMensMorris;i++){
+		for (int i=0;i<numMensMorris;i++){	//populate piecelist
 			sidepiece = new Circle (100+20*i, 200, 10, sidepiececolor);
 			sidepiece1 = new Circle (100+20*i, 400, 10, Color.RED);
 			bluepiecelist[i]=sidepiece;
@@ -357,13 +364,13 @@ public class Model {
 		}
 		
 		
-		Button newgame = new Button("New Game");
+		Button newgame = new Button("New Game");		//newgame button
 		newgame.setTranslateX(350);
 		
 		newgame.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent arg0){
-				Controller.newgameButton();
+				Controller.newgameButton();				//call controller method
 			}
 		});
 
@@ -374,9 +381,9 @@ public class Model {
 		Button validButton = new Button("Validate");
 		validButton.setTranslateX(700);    	
 		validButton.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
+			@Override	
 			public void handle(ActionEvent arg0){
-				Controller.validButton();
+				Controller.validButton();				//validButton controller method
 			}
 		});
 		
@@ -396,7 +403,7 @@ public class Model {
 		nodes.getChildren().add(sboxButton);
 		return nodes;
 		}
-	public static void reset(){	
+	public static void reset(){				//reset the board to the default state
 		redCount = 0;
 		blueCount = 0;	
 		duplicate = false;
@@ -410,12 +417,7 @@ public class Model {
 
 }
 
-//	public static void main(String[] args) {
-//		createBoard(6);										//create the board model
-//		launch(args);
-//		
-//	}
-	
+
 
 
 

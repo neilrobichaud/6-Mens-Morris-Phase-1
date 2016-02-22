@@ -2,7 +2,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-public class Controller {
+public class Controller {				//controller for the MVC model
 	public static void redbutton(){
 		if(Model.isSbox!=true){
 			Alert alert = new Alert(AlertType.INFORMATION);
@@ -37,13 +37,13 @@ public class Controller {
 			Model.reset();
 			for (int i=0;i<Model.numMensMorris/3;i++){
 				for(int j=0;j<8;j++){
-					Model.boardState[i][j].circle.setFill(Color.BLACK);
+					Model.getboardState(i,j).circle.setFill(Color.BLACK);
 				}
 			}
 			for (int i=0;i<Model.numMensMorris;i++){
 
-				Model.bluepiecelist[i].setFill(Color.BLUE);
-				Model.redpiecelist[i].setFill(Color.RED);
+				Model.getbluepiecelist(i).setFill(Color.BLUE);
+				Model.getredpiecelist(i).setFill(Color.RED);
 			}
 		}
 		Model.pickedcolor="newgame";
@@ -72,7 +72,10 @@ public class Controller {
 
 	}
 	public static void pointclicked(Circle g){
-		if (Model.pickedcolor == "sBox"| Model.isSbox == true) {
+		/*
+		 * series of methods for sandbox mode to determine whether a sequence is valid
+		 */
+		if (Model.pickedcolor == "sBox"| Model.isSbox == true) { //check if sandbox mode is on
 			Model.isSbox = true;
 			if (!(g.getFill().toString().equals("0x000000ff"))){
 				Model.duplicate = true;
@@ -96,11 +99,14 @@ public class Controller {
 			}
 			
 			
-		}					
+		}
+		/*
+		 * If a player forms a mill and needs to remove a piece of the opposite color
+		 */
 		else if(Model.rmPiece==true){
 			if(Model.pickedcolor.equals("removered")){
 				if(g.getFill()==Color.RED){
-					Model.redpiecelist[Model.redCount-1].setFill(Color.RED);
+					Model.getredpiecelist(Model.redCount-1).setFill(Color.RED);
 					g.setFill(Color.BLACK);								
 					Model.rmPiece=false;
 					StartTurn();
@@ -119,7 +125,7 @@ public class Controller {
 			else{
 				if(g.getFill()==Color.BLUE){
 					g.setFill(Color.BLACK);
-					Model.bluepiecelist[Model.blueCount-1].setFill(Color.BLUE);
+					Model.getbluepiecelist(Model.blueCount-1).setFill(Color.BLUE);
 					Model.rmPiece=false;
 					StartTurn();
 					Model.removeFromArray(g.getCenterX(),g.getCenterY());
@@ -135,7 +141,7 @@ public class Controller {
 			}
 		}
 		else {
-		if (!(g.getFill().toString().equals("0x000000ff"))){
+		if (!(g.getFill().toString().equals("0x000000ff"))){ //if space is not blank
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Information Dialog");
 			alert.setHeaderText("You cannot place one piece on top of another");
@@ -143,7 +149,7 @@ public class Controller {
 			alert.showAndWait();
 
 		}
-		else if(Model.redCount>=Model.numMensMorris&&Model.blueCount>=Model.numMensMorris){
+		else if(Model.redCount>=Model.numMensMorris&&Model.blueCount>=Model.numMensMorris){ //if each player has played all their pieces
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Information Dialog");
 			alert.setHeaderText("Phase 1 has ended");
@@ -177,8 +183,8 @@ public class Controller {
 				alert.showAndWait();
 			}
 			else{
-				g.setFill(Color.RED);
-				Model.redpiecelist[0+Model.redCount].setFill(Color.BEIGE);
+				g.setFill(Color.RED);	//set point to red
+				Model.getredpiecelist(0+Model.redCount).setFill(Color.BEIGE);	//remove sidepiece
 				Model.redCount++;
 				
 				Model.addToArrays(g.getCenterX(),g.getCenterY());
@@ -195,7 +201,6 @@ public class Controller {
 				}
 				else{
 				StartTurn();
-				//System.out.println(Model.pickedcolor);
 				Model.lastcolor = "red";
 				if(Model.redCount>Model.numMensMorris&&Model.blueCount>Model.numMensMorris){
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -218,10 +223,9 @@ public class Controller {
 			}
 			else{
 				g.setFill(Color.BLUE);
-				Model.bluepiecelist[0+Model.blueCount].setFill(Color.BEIGE);
+				Model.getbluepiecelist(0+Model.blueCount).setFill(Color.BEIGE);
 				Model.blueCount++;
-				Model.addToArrays(g.getCenterX(),g.getCenterY());
-				//System.out.println(g.getCenterX()+" "+g.getCenterY());
+				Model.addToArrays(g.getCenterX(),g.getCenterY());				
 				if(Model.formedMill(g.getCenterX(),g.getCenterY())==true){
 					Model.rmPiece=true;
 					Model.pickedcolor="removered";
@@ -235,8 +239,7 @@ public class Controller {
 				else{
 					
 				
-				StartTurn();
-				//System.out.println(Model.pickedcolor);
+				StartTurn();			
 				Model.lastcolor = "blue";
 				if(Model.redCount>Model.numMensMorris&&Model.blueCount>Model.numMensMorris){
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -253,6 +256,9 @@ public class Controller {
 		
 	}
 	public static void validButton(){
+		/*
+		 * check the various state variables to find whether a valid sequence has been made
+		 */
 		if(Model.isSbox!=true){
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Information Dialog");
@@ -280,18 +286,27 @@ public class Controller {
 	}
 	
 	public static void sBoxButtonControl(){
+		/*
+		 * set state variables
+		 */
 		Model.pickedcolor = "sBox";
 		Model.isSbox=true;
 		Model.NewGame=false;
 	}
 
 	public static void turnRandomizer(){
+		/*
+		 * create a random turn start
+		 */
     	int randomnum=(int)(Math.random()*2);
     	if(randomnum==0)Model.PlayerTurn=true;//blue
     	else Model.PlayerTurn=false;//red
     }
 	public static void StartTurn(){
-    	if(Model.PlayerTurn==true){
+		/*
+		 * switch the player turn
+		 */
+    	if(Model.PlayerTurn==true){	
     		Model.PlayerTurn=false;
     		Model.pickedcolor="red";
     	}
