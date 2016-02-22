@@ -17,19 +17,21 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 public class View extends Application {
+	
 	public static void main(String[] args) {
 		//create the board model
-		Model.launch();
+		launch();
 
 	}
+
+	
 
 	@Override
-	public void start(Stage Model.primaryStage) {
-		initxycheck();
-		Scene scene1 = new Scene(shellmaker(numMensMorris/3),800,600,Color.BEIGE);
-		primaryStage.setScene(scene1);	
-		primaryStage.setTitle("6 mens morris");
-		primaryStage.show();      
-
-	}
-}
+	public void start(Stage args0) throws Exception {
+		// TODO Auto-generated method stub
+		Model.initxycheck();
+		Scene scene1 = new Scene(Model.shellmaker(Model.numMensMorris/3),800,600,Color.BEIGE);
+		args0.setScene(scene1);	
+		args0.setTitle("6 mens morris");
+		args0.show(); 
+	}}

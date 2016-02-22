@@ -20,24 +20,24 @@ import javafx.stage.Stage;
 // to do:
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
-public class Model extends Application {
-	private static int numMensMorris=6;	//variable to store the number of mens morris ie. 6
-	private static Circle[] bluepiecelist;
-	private static Circle[] redpiecelist;
-	private boolean PlayerTurn=true;
-	private static int redCount = 0;
-	private static int blueCount = 0;
-	private static String[][] boardState;
-	private boolean duplicate = false;
-	private boolean numPieces = false;
-	private boolean rmPiece=false;
-	private boolean NewGame=false;
-	private boolean isSbox = false;
-	private String lastcolor = "white";
-	private String pickedcolor = "black";
-	private String [][][]xycheck=new String[2][4][3];//[0][][] for x [1][][] for y
+public class Model {
+	public static int numMensMorris=6;	//variable to store the number of mens morris ie. 6
+	public static Circle[] bluepiecelist;
+	public static Circle[] redpiecelist;
+	public static boolean PlayerTurn=true;
+	public static int redCount = 0;
+	public static int blueCount = 0;
+	public static String[][] boardState;
+	public static boolean duplicate = false;
+	public static boolean numPieces = false;
+	public static boolean rmPiece=false;
+	public static boolean NewGame=false;
+	public static boolean isSbox = false;
+	public static String lastcolor = "white";
+	public static String pickedcolor = "black";
+	public static String [][][]xycheck=new String[2][4][3];//[0][][] for x [1][][] for y
 	
-	public void initxycheck(){//for various purposes, get rid of nulls when initialized
+	public static void initxycheck(){//for various purposes, get rid of nulls when initialized
 		for(int i=0;i<xycheck.length;i++){
 			for(int j=0;j<xycheck[i].length;j++){
 				for(int k=0;k<xycheck[i][j].length;k++){
@@ -60,215 +60,215 @@ public class Model extends Application {
 	public void check(Point x){
 		
 	}
-
-	private class Point extends StackPane{
-		double x,y;
-		double sizenode = 10; 	
-		Circle circle;
-		Color nodecolor = Color.BLACK;	
-		private void changeNodeColor(Color x){									//method to change the color of a given node
-			circle.setFill(x);
-		}
-		public Point(double x, double y){
-			this.x =x;
-			this.y =y;
-			circle = new Circle (x, y, sizenode, nodecolor);
-			setTranslateX(x);
-			setTranslateY(y);
-			getChildren().addAll(circle);    
-			
-			setOnMouseClicked(new EventHandler<MouseEvent>()    		
-			{
-
-				@Override
-				public void handle(MouseEvent t) {
-					// checks duplicate placing
-					if (pickedcolor == "sBox"| isSbox == true) {
-						isSbox = true;
-						if (!(circle.getFill().toString().equals("0x000000ff"))){
-							duplicate = true;
-						}
-						//check for placing more than 6 pieces in total 
-						else if (redCount >numMensMorris && pickedcolor == "red") {
-							numPieces = true;
-						}
-						else if (blueCount> numMensMorris && pickedcolor == "blue") {
-							numPieces = true;
-						}
-						if (pickedcolor == "red"){                		
-							circle.setFill(Color.RED);
-							redCount++;
-							
-						}
-						else if (pickedcolor == "blue"){                		
-							circle.setFill(Color.BLUE);
-							blueCount++;
-							
-						}
-						
-						
-					}					
-					else if(rmPiece==true){
-						if(pickedcolor.equals("removered")){
-							if(circle.getFill()==Color.RED){
-								redpiecelist[redCount-1].setFill(Color.RED);
-								circle.setFill(Color.BLACK);								
-								rmPiece=false;
-								StartTurn();
-								removeFromArray(circle.getCenterX(),circle.getCenterY());
-							}
-							else{
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("Invalid move");
-								alert.setContentText("You can only remove red discs");
-								alert.showAndWait();
-							}
-							
-						}
-						
-						else{
-							if(circle.getFill()==Color.BLUE){
-								circle.setFill(Color.BLACK);
-								bluepiecelist[blueCount-1].setFill(Color.BLUE);
-								rmPiece=false;
-								StartTurn();
-								removeFromArray(circle.getCenterX(),circle.getCenterY());
-							}
-							else{
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("Invalid move");
-								alert.setContentText("You can only remove blue discs");
-								alert.showAndWait();
-							}
-							
-						}
-					}
-					else {
-					if (!(circle.getFill().toString().equals("0x000000ff"))){
-						Alert alert = new Alert(AlertType.INFORMATION);
-						alert.setTitle("Information Dialog");
-						alert.setHeaderText("You cannot place one piece on top of another");
-						alert.setContentText("Please try again");
-						alert.showAndWait();
-
-					}
-					else if(redCount>=numMensMorris&&blueCount>=numMensMorris){
-						Alert alert = new Alert(AlertType.INFORMATION);
-						alert.setTitle("Information Dialog");
-						alert.setHeaderText("Phase 1 has ended");
-						alert.setContentText("Game will resume with Phase 2");
-						alert.showAndWait();
-					}
-					//check for placing more than 6 pieces in total 
-					else if (redCount >numMensMorris && pickedcolor == "red") {
-						Alert alert = new Alert(AlertType.INFORMATION);
-						alert.setTitle("Information Dialog");
-						alert.setHeaderText("You cannot place more than 6 pieces");
-						alert.setContentText("Please try using another color");
-						alert.showAndWait();
-
-					}
-					else if (blueCount> numMensMorris && pickedcolor == "blue") {
-						Alert alert = new Alert(AlertType.INFORMATION);
-						alert.setTitle("Information Dialog");
-						alert.setHeaderText("You cannot place more than 6 pieces");
-						alert.setContentText("Please try using another color");
-						alert.showAndWait();
-
-					}
-					
-					else if (pickedcolor == "red"){ 
-						if (lastcolor.equals("red")){												//for regular play, cannot place two of the same piece in a row
-							Alert alert = new Alert(AlertType.INFORMATION);
-							alert.setTitle("Information Dialog");
-							alert.setHeaderText("It is the blue players turn");
-							alert.setContentText("Please try using another color");
-							alert.showAndWait();
-						}
-						else{
-							circle.setFill(Color.RED);
-							redpiecelist[0+redCount].setFill(Color.BEIGE);
-							redCount++;
-							
-							addToArrays(circle.getCenterX(),circle.getCenterY());
-							//System.out.println(circle.getCenterX()+" "+circle.getCenterY());
-							if(formedMill(circle.getCenterX(),circle.getCenterY())==true){
-								rmPiece=true;
-								pickedcolor="removeblue";
-								lastcolor = "red";
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Red formed a mill");
-								alert.setHeaderText("You can now remove a blue disc");
-								alert.setContentText("Click on a blue disc to remove it.");
-								alert.showAndWait();
-							}
-							else{
-							StartTurn();
-							//System.out.println(pickedcolor);
-							lastcolor = "red";
-							if(redCount>numMensMorris&&blueCount>numMensMorris){
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("Phase 1 has ended");
-								alert.setContentText("Game will resume with Phase 2");
-								alert.showAndWait();
-							}
-							}
-						}
-					}
-					
-					else if(pickedcolor == "blue"){												//for regular play, cannot place two of the same piece in a row
-						if (lastcolor.equals("blue")){
-							Alert alert = new Alert(AlertType.INFORMATION);
-							alert.setTitle("Information Dialog");
-							alert.setHeaderText("It is the red players turn");
-							alert.setContentText("Please try using another color");
-							alert.showAndWait();
-						}
-						else{
-							circle.setFill(Color.BLUE);
-							bluepiecelist[0+blueCount].setFill(Color.BEIGE);
-							blueCount++;
-							addToArrays(circle.getCenterX(),circle.getCenterY());
-							//System.out.println(circle.getCenterX()+" "+circle.getCenterY());
-							if(formedMill(circle.getCenterX(),circle.getCenterY())==true){
-								rmPiece=true;
-								pickedcolor="removered";
-								lastcolor = "blue";
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Blue formed a mill");
-								alert.setHeaderText("You can now remove a red disc");
-								alert.setContentText("Click on a red disc to remove it.");
-								alert.showAndWait();
-							}
-							else{
-								
-							
-							StartTurn();
-							//System.out.println(pickedcolor);
-							lastcolor = "blue";
-							if(redCount>numMensMorris&&blueCount>numMensMorris){
-								Alert alert = new Alert(AlertType.INFORMATION);
-								alert.setTitle("Information Dialog");
-								alert.setHeaderText("Phase 1 has ended");
-								alert.setContentText("Game will resume with Phase 2");
-								alert.showAndWait();
-							}
-							}
-						}
-					}										
-					
-					}
-					
-				}
-				
-				
-			});
-		}    	
-	}
-	public void addToArrays(double x,double y){//keeps track of color in each circle
+//
+//	private class Point extends StackPane{
+//		double x,y;
+//		double sizenode = 10; 	
+//		Circle circle;
+//		Color nodecolor = Color.BLACK;	
+//		private void changeNodeColor(Color x){									//method to change the color of a given node
+//			circle.setFill(x);
+//		}
+//		public Point(double x, double y){
+//			this.x =x;
+//			this.y =y;
+//			circle = new Circle (x, y, sizenode, nodecolor);
+//			setTranslateX(x);
+//			setTranslateY(y);
+//			getChildren().addAll(circle);    
+//			
+//			setOnMouseClicked(new EventHandler<MouseEvent>()    		
+//			{
+//
+//				@Override
+//				public void handle(MouseEvent t) {
+//					// checks duplicate placing
+//					if (pickedcolor == "sBox"| isSbox == true) {
+//						isSbox = true;
+//						if (!(circle.getFill().toString().equals("0x000000ff"))){
+//							duplicate = true;
+//						}
+//						//check for placing more than 6 pieces in total 
+//						else if (redCount >numMensMorris && pickedcolor == "red") {
+//							numPieces = true;
+//						}
+//						else if (blueCount> numMensMorris && pickedcolor == "blue") {
+//							numPieces = true;
+//						}
+//						if (pickedcolor == "red"){                		
+//							circle.setFill(Color.RED);
+//							redCount++;
+//							
+//						}
+//						else if (pickedcolor == "blue"){                		
+//							circle.setFill(Color.BLUE);
+//							blueCount++;
+//							
+//						}
+//						
+//						
+//					}					
+//					else if(rmPiece==true){
+//						if(pickedcolor.equals("removered")){
+//							if(circle.getFill()==Color.RED){
+//								redpiecelist[redCount-1].setFill(Color.RED);
+//								circle.setFill(Color.BLACK);								
+//								rmPiece=false;
+//								StartTurn();
+//								removeFromArray(circle.getCenterX(),circle.getCenterY());
+//							}
+//							else{
+//								Alert alert = new Alert(AlertType.INFORMATION);
+//								alert.setTitle("Information Dialog");
+//								alert.setHeaderText("Invalid move");
+//								alert.setContentText("You can only remove red discs");
+//								alert.showAndWait();
+//							}
+//							
+//						}
+//						
+//						else{
+//							if(circle.getFill()==Color.BLUE){
+//								circle.setFill(Color.BLACK);
+//								bluepiecelist[blueCount-1].setFill(Color.BLUE);
+//								rmPiece=false;
+//								StartTurn();
+//								removeFromArray(circle.getCenterX(),circle.getCenterY());
+//							}
+//							else{
+//								Alert alert = new Alert(AlertType.INFORMATION);
+//								alert.setTitle("Information Dialog");
+//								alert.setHeaderText("Invalid move");
+//								alert.setContentText("You can only remove blue discs");
+//								alert.showAndWait();
+//							}
+//							
+//						}
+//					}
+//					else {
+//					if (!(circle.getFill().toString().equals("0x000000ff"))){
+//						Alert alert = new Alert(AlertType.INFORMATION);
+//						alert.setTitle("Information Dialog");
+//						alert.setHeaderText("You cannot place one piece on top of another");
+//						alert.setContentText("Please try again");
+//						alert.showAndWait();
+//
+//					}
+//					else if(redCount>=numMensMorris&&blueCount>=numMensMorris){
+//						Alert alert = new Alert(AlertType.INFORMATION);
+//						alert.setTitle("Information Dialog");
+//						alert.setHeaderText("Phase 1 has ended");
+//						alert.setContentText("Game will resume with Phase 2");
+//						alert.showAndWait();
+//					}
+//					//check for placing more than 6 pieces in total 
+//					else if (redCount >numMensMorris && pickedcolor == "red") {
+//						Alert alert = new Alert(AlertType.INFORMATION);
+//						alert.setTitle("Information Dialog");
+//						alert.setHeaderText("You cannot place more than 6 pieces");
+//						alert.setContentText("Please try using another color");
+//						alert.showAndWait();
+//
+//					}
+//					else if (blueCount> numMensMorris && pickedcolor == "blue") {
+//						Alert alert = new Alert(AlertType.INFORMATION);
+//						alert.setTitle("Information Dialog");
+//						alert.setHeaderText("You cannot place more than 6 pieces");
+//						alert.setContentText("Please try using another color");
+//						alert.showAndWait();
+//
+//					}
+//					
+//					else if (pickedcolor == "red"){ 
+//						if (lastcolor.equals("red")){												//for regular play, cannot place two of the same piece in a row
+//							Alert alert = new Alert(AlertType.INFORMATION);
+//							alert.setTitle("Information Dialog");
+//							alert.setHeaderText("It is the blue players turn");
+//							alert.setContentText("Please try using another color");
+//							alert.showAndWait();
+//						}
+//						else{
+//							circle.setFill(Color.RED);
+//							redpiecelist[0+redCount].setFill(Color.BEIGE);
+//							redCount++;
+//							
+//							addToArrays(circle.getCenterX(),circle.getCenterY());
+//							//System.out.println(circle.getCenterX()+" "+circle.getCenterY());
+//							if(formedMill(circle.getCenterX(),circle.getCenterY())==true){
+//								rmPiece=true;
+//								pickedcolor="removeblue";
+//								lastcolor = "red";
+//								Alert alert = new Alert(AlertType.INFORMATION);
+//								alert.setTitle("Red formed a mill");
+//								alert.setHeaderText("You can now remove a blue disc");
+//								alert.setContentText("Click on a blue disc to remove it.");
+//								alert.showAndWait();
+//							}
+//							else{
+//							StartTurn();
+//							//System.out.println(pickedcolor);
+//							lastcolor = "red";
+//							if(redCount>numMensMorris&&blueCount>numMensMorris){
+//								Alert alert = new Alert(AlertType.INFORMATION);
+//								alert.setTitle("Information Dialog");
+//								alert.setHeaderText("Phase 1 has ended");
+//								alert.setContentText("Game will resume with Phase 2");
+//								alert.showAndWait();
+//							}
+//							}
+//						}
+//					}
+//					
+//					else if(pickedcolor == "blue"){												//for regular play, cannot place two of the same piece in a row
+//						if (lastcolor.equals("blue")){
+//							Alert alert = new Alert(AlertType.INFORMATION);
+//							alert.setTitle("Information Dialog");
+//							alert.setHeaderText("It is the red players turn");
+//							alert.setContentText("Please try using another color");
+//							alert.showAndWait();
+//						}
+//						else{
+//							circle.setFill(Color.BLUE);
+//							bluepiecelist[0+blueCount].setFill(Color.BEIGE);
+//							blueCount++;
+//							addToArrays(circle.getCenterX(),circle.getCenterY());
+//							//System.out.println(circle.getCenterX()+" "+circle.getCenterY());
+//							if(formedMill(circle.getCenterX(),circle.getCenterY())==true){
+//								rmPiece=true;
+//								pickedcolor="removered";
+//								lastcolor = "blue";
+//								Alert alert = new Alert(AlertType.INFORMATION);
+//								alert.setTitle("Blue formed a mill");
+//								alert.setHeaderText("You can now remove a red disc");
+//								alert.setContentText("Click on a red disc to remove it.");
+//								alert.showAndWait();
+//							}
+//							else{
+//								
+//							
+//							StartTurn();
+//							//System.out.println(pickedcolor);
+//							lastcolor = "blue";
+//							if(redCount>numMensMorris&&blueCount>numMensMorris){
+//								Alert alert = new Alert(AlertType.INFORMATION);
+//								alert.setTitle("Information Dialog");
+//								alert.setHeaderText("Phase 1 has ended");
+//								alert.setContentText("Game will resume with Phase 2");
+//								alert.showAndWait();
+//							}
+//							}
+//						}
+//					}										
+//					
+//					}
+//					
+//				}
+//				
+//				
+//			});
+//		}    	
+//	}
+	public static void addToArrays(double x,double y){//keeps track of color in each circle
 		if(x==280.0){
 			if(y==180.0){
 				xycheck[0][0][0]=pickedcolor;
@@ -342,7 +342,7 @@ public class Model extends Application {
 		}
 		
 	}
-	public void removeFromArray(double x,double y){
+	public static void removeFromArray(double x,double y){
 		if(x==280.0){
 		if(y==180.0){
 			xycheck[0][0][0]="noColor";
@@ -416,7 +416,7 @@ public class Model extends Application {
 	}
 		
 	}
-	public boolean formedMill(double x,double y){//check if mill was formed with the last click
+	public static boolean formedMill(double x,double y){//check if mill was formed with the last click
 		boolean millfound=false;
 		
 		for(int i=0;i<xycheck.length;i++){
@@ -500,7 +500,7 @@ public class Model extends Application {
 		return millfound;
 	}
 	// just for making the board and placing the lines
-	public Parent shellmaker(int shellnum){
+	public static Parent shellmaker(int shellnum){
 
 		double startX = 400;
 		double startY = 300;
@@ -701,12 +701,12 @@ public class Model extends Application {
 	}
 	
 	
-	public void newGame(){
+	public static void newGame(){
     	int randomnum=(int)(Math.random()*2);
     	if(randomnum==0)PlayerTurn=true;//blue
     	else PlayerTurn=false;//red
     }
-	public void StartTurn(){
+	public static void StartTurn(){
     	if(PlayerTurn==true){
     		PlayerTurn=false;
     		pickedcolor="red";
