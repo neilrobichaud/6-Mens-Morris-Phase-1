@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 // to do:
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
-public class ColorfulCircles extends Application {
+public class Model extends Application {
 	private static int numMensMorris=6;	//variable to store the number of mens morris ie. 6
 	private static Circle[] bluepiecelist;
 	private static Circle[] redpiecelist;
@@ -48,15 +48,15 @@ public class ColorfulCircles extends Application {
 	}
 			
 	
-	@Override
-	public void start(Stage primaryStage) {
-		initxycheck();
-		Scene scene1 = new Scene(shellmaker(numMensMorris/3),800,600,Color.BEIGE);
-		primaryStage.setScene(scene1);	
-		primaryStage.setTitle("6 mens morris");
-		primaryStage.show();      
-
-	}
+//	@Override
+//	public void start(Stage primaryStage) {
+//		initxycheck();
+//		Scene scene1 = new Scene(shellmaker(numMensMorris/3),800,600,Color.BEIGE);
+//		primaryStage.setScene(scene1);	
+//		primaryStage.setTitle("6 mens morris");
+//		primaryStage.show();      
+//
+//	}
 	public void check(Point x){
 		
 	}
@@ -717,11 +717,11 @@ public class ColorfulCircles extends Application {
     	}
     }
 
-	public static void main(String[] args) {
-		createBoard(6);										//create the board model
-		launch(args);
-		
-	}
+//	public static void main(String[] args) {
+//		createBoard(6);										//create the board model
+//		launch(args);
+//		
+//	}
 	public static void updateBoard(){
 		
 		
