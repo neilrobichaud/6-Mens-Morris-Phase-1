@@ -71,13 +71,14 @@ public class Controller {				//controller for the MVC model
 		}
 
 	}
-	public static void pointclicked(Circle g){
+	public static void pointclicked(Point p){
 		/*
 		 * series of methods for sandbox mode to determine whether a sequence is valid
 		 */
+		
 		if (Model.pickedcolor == "sBox"| Model.isSbox == true) { //check if sandbox mode is on
 			Model.isSbox = true;
-			if (!(g.getFill().toString().equals("0x000000ff"))){
+			if (!(p.circle.getFill().toString().equals("0x000000ff"))){
 				Model.duplicate = true;
 			}
 			//check for placing more than 6 pieces in total 
@@ -88,12 +89,12 @@ public class Controller {				//controller for the MVC model
 				Model.numPieces = true;
 			}
 			if (Model.pickedcolor == "red"){                		
-				g.setFill(Color.RED);
+				p.circle.setFill(Color.RED);
 				Model.redCount++;
 				
 			}
 			else if (Model.pickedcolor == "blue"){                		
-				g.setFill(Color.BLUE);
+				p.circle.setFill(Color.BLUE);
 				Model.blueCount++;
 				
 			}
@@ -105,12 +106,13 @@ public class Controller {				//controller for the MVC model
 		 */
 		else if(Model.rmPiece==true){
 			if(Model.pickedcolor.equals("removered")){
-				if(g.getFill()==Color.RED){
+				if(p.circle.getFill()==Color.RED){
 					Model.getredpiecelist(Model.redCount-1).setFill(Color.RED);
-					g.setFill(Color.BLACK);								
+					p.circle.setFill(Color.BLACK);								
 					Model.rmPiece=false;
+					
 					StartTurn();
-					Model.removeFromArray(g.getCenterX(),g.getCenterY());
+					
 				}
 				else{
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -123,12 +125,12 @@ public class Controller {				//controller for the MVC model
 			}
 			
 			else{
-				if(g.getFill()==Color.BLUE){
-					g.setFill(Color.BLACK);
+				if(p.circle.getFill()==Color.BLUE){
+					p.circle.setFill(Color.BLACK);
 					Model.getbluepiecelist(Model.blueCount-1).setFill(Color.BLUE);
 					Model.rmPiece=false;
 					StartTurn();
-					Model.removeFromArray(g.getCenterX(),g.getCenterY());
+					
 				}
 				else{
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -141,7 +143,7 @@ public class Controller {				//controller for the MVC model
 			}
 		}
 		else {
-		if (!(g.getFill().toString().equals("0x000000ff"))){ //if space is not blank
+		if (!(p.circle.getFill().toString().equals("0x000000ff"))){ //if space is not blank
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Information Dialog");
 			alert.setHeaderText("You cannot place one piece on top of another");
@@ -183,13 +185,13 @@ public class Controller {				//controller for the MVC model
 				alert.showAndWait();
 			}
 			else{
-				g.setFill(Color.RED);	//set point to red
+				p.circle.setFill(Color.RED);	//set point to red
 				Model.getredpiecelist(0+Model.redCount).setFill(Color.BEIGE);	//remove sidepiece
 				Model.redCount++;
 				
-				Model.addToArrays(g.getCenterX(),g.getCenterY());
-				//System.out.println(g.getCenterX()+" "+g.getCenterY());
-				if(Model.formedMill(g.getCenterX(),g.getCenterY())==true){
+				
+				//System.out.println(p.circle.getCenterX()+" "+p.circle.getCenterY());
+				if(Model.formedMill(p)){
 					Model.rmPiece=true;
 					Model.pickedcolor="removeblue";
 					Model.lastcolor = "red";
@@ -222,11 +224,11 @@ public class Controller {				//controller for the MVC model
 				alert.showAndWait();
 			}
 			else{
-				g.setFill(Color.BLUE);
+				p.circle.setFill(Color.BLUE);
 				Model.getbluepiecelist(0+Model.blueCount).setFill(Color.BEIGE);
 				Model.blueCount++;
-				Model.addToArrays(g.getCenterX(),g.getCenterY());				
-				if(Model.formedMill(g.getCenterX(),g.getCenterY())==true){
+								
+				if(Model.formedMill(p)){
 					Model.rmPiece=true;
 					Model.pickedcolor="removered";
 					Model.lastcolor = "blue";
