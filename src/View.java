@@ -4,7 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 public class View extends Application {
-	private static Group nodes;								//group to display in scene
+	public static Group nodes;								//group to display in scene
 	public static void main(String[] args) {
 		//create the board model
 		launch();

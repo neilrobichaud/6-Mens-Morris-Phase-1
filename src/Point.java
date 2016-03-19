@@ -40,8 +40,14 @@ public class Point extends StackPane{
 				@Override
 				public void handle(MouseEvent t) {				
 					// checks Model.duplicate placing	
-					Controller.pointclicked(p);			//calls controller method	
-					}    	
+					if (Model.phase == 1){
+						Controller.pointclicked(p);			//calls controller method	
+					}  
+					else if (Model.phase == 2){
+						Controller.pointclicked2(p);
+					}
+					}
+					  	
 			});
 		}
 }

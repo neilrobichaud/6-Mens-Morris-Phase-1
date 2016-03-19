@@ -5,11 +5,15 @@ import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 // to do:
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
 public class Model {
+	public static Text t;
 	public static int numMensMorris = 6; // variable to store the number of mens
 											// morris ie. 6
 	private static Point[][] boardState; // 2D array; inner arrays represent
@@ -34,6 +38,7 @@ public class Model {
 											// it is in sandbox mode
 	public static String lastcolor = "white"; // the last color picked
 	public static String pickedcolor = "black"; // the color currently selected
+	public static int phase = 1;
 
 	public static Circle getbluepiecelist(int i) {
 		return bluepiecelist[i];
@@ -241,8 +246,16 @@ public class Model {
 				Controller.sBoxButtonControl();
 			}
 		});
-
+		
 		nodes.getChildren().add(sboxButton);
+		
+		t = new Text();
+		t.setY(100);
+		t.setTextAlignment(TextAlignment.CENTER);
+		t.setFont(new Font(20));
+		t.setText("CLICK NEW GAME");
+		nodes.getChildren().add(t);
+		
 		return nodes;
 	}
 
