@@ -5,15 +5,16 @@ import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
 // to do:
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
 public class Model {
-	public static Text t;
 	public static int numMensMorris = 6; // variable to store the number of mens
 											// morris ie. 6
 	private static Point[][] boardState; // 2D array; inner arrays represent
@@ -38,7 +39,6 @@ public class Model {
 											// it is in sandbox mode
 	public static String lastcolor = "white"; // the last color picked
 	public static String pickedcolor = "black"; // the color currently selected
-	public static int phase = 1;
 
 	public static Circle getbluepiecelist(int i) {
 		return bluepiecelist[i];
@@ -108,7 +108,7 @@ public class Model {
 	}
 
 	// just for making the board and placing the lines
-	public static Group shellmaker(int shellnum) { // creates the model for the
+	public static Group shellmaker(int shellnum) throws IOException{ // creates the model for the
 													// board
 		boardState = new Point[shellnum][8]; // initialize the board array
 		double startX = 400; // board size
@@ -225,7 +225,40 @@ public class Model {
 		});
 
 		nodes.getChildren().add(newgame);
+		
+		Button savegame = new Button("Save Game"); // savegame button
+		savegame.setTranslateX(700);
+		savegame.setTranslateY(100);
+		savegame.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					Controller.savegameButton();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // call controller method
+			}
+		});
 
+		nodes.getChildren().add(savegame);
+		
+		Button loadgame = new Button("Load Game"); // loadgame button
+		loadgame.setTranslateX(700);
+		loadgame.setTranslateY(130);
+		loadgame.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					Controller.loadgameButton();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // call controller method
+			}
+		});
+
+		nodes.getChildren().add(loadgame);
 		Button validButton = new Button("Validate");
 		validButton.setTranslateX(700);
 		validButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -246,16 +279,8 @@ public class Model {
 				Controller.sBoxButtonControl();
 			}
 		});
-		
+
 		nodes.getChildren().add(sboxButton);
-		
-		t = new Text();
-		t.setY(100);
-		t.setTextAlignment(TextAlignment.CENTER);
-		t.setFont(new Font(20));
-		t.setText("CLICK NEW GAME");
-		nodes.getChildren().add(t);
-		
 		return nodes;
 	}
 
@@ -268,6 +293,84 @@ public class Model {
 		lastcolor = "white";
 		pickedcolor = "black";
 
+	}
+	
+	public static void saveGame()throws IOException{
+		BufferedWriter in = new BufferedWriter(new FileWriter(new File("data.txt")));
+		/*To store redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
+		 * 
+		 */
+		in.write(redCount+"");
+		in.newLine();
+		in.write(blueCount+"");
+		in.newLine();
+		in.write(duplicate+"");
+		in.newLine();
+		in.write(numPieces+"");
+		in.newLine();
+		in.write(rmPiece+"");
+		in.newLine();
+		in.write(lastcolor);
+		in.newLine();
+		in.write(pickedcolor);
+		in.newLine();
+		String bplist="";
+		String rplist="";
+		String bstate="";
+		for(int i=0;i<bluepiecelist.length;i++){
+			
+			bplist=bplist+bluepiecelist[i].getFill()+",";
+		}
+		for(int i=0;i<redpiecelist.length;i++){
+			
+			rplist=rplist+redpiecelist[i].getFill()+",";
+		}
+		for(int o=0;o<boardState.length;o++){
+			for(int p=0;p<boardState[o].length;p++){
+				
+				bstate=bstate+boardState[o][p].circle.getFill()+",";
+			}
+		}
+		in.write(bplist);
+		in.newLine();
+		in.write(rplist);
+		in.newLine();
+		in.write(bstate);
+		in.newLine();
+		in.close();
+	}
+	public static void loadGame()throws IOException{
+		BufferedReader in = new BufferedReader(new FileReader(new File("data.txt")));
+		isSbox=false;
+		NewGame=true;
+		/*To get redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
+		 * 
+		 */
+		
+		redCount=Integer.parseInt(in.readLine());
+		blueCount=Integer.parseInt(in.readLine());
+		duplicate=Boolean.parseBoolean(in.readLine());
+		numPieces=Boolean.parseBoolean(in.readLine());
+		rmPiece=Boolean.parseBoolean(in.readLine());
+		lastcolor=in.readLine();
+		pickedcolor=in.readLine();
+		String [] bpcolors=in.readLine().split(",");
+		String [] rpcolors=in.readLine().split(",");
+		String [] bscolors=in.readLine().split(",");
+		for(int i=0;i<bluepiecelist.length;i++){
+			bluepiecelist[i].setFill(Color.web(bpcolors[i]));
+		}
+		for(int i=0;i<redpiecelist.length;i++){
+			redpiecelist[i].setFill(Color.web(rpcolors[i]));
+		}
+		int k=-1;
+		for(int o=0;o<boardState.length;o++){
+			for(int p=0;p<boardState[o].length;p++){
+				k++;
+				boardState[o][p].circle.setFill(Color.web(bscolors[k]));
+			}
+		}
+		
 	}
 
 }
