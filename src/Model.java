@@ -13,7 +13,9 @@ import javafx.scene.text.TextAlignment;
 // place and put errors where they exist :::::::: DONE
 // make another one where it just changes boolean values to true and false and will spit out the errors when  validate button is pushed ::::: in progress
 public class Model {
+
 	public static Text t;
+	public static Text t2;
 	public static int numMensMorris = 6; // variable to store the number of mens
 											// morris ie. 6
 	private static Point[][] boardState; // 2D array; inner arrays represent
@@ -243,6 +245,7 @@ public class Model {
 		sboxButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
+				
 				Controller.sBoxButtonControl();
 			}
 		});
@@ -254,7 +257,15 @@ public class Model {
 		t.setTextAlignment(TextAlignment.CENTER);
 		t.setFont(new Font(20));
 		t.setText("CLICK NEW GAME");
-		nodes.getChildren().add(t);
+		t2 = new Text();
+		t2.setY(150);
+		t2.setTextAlignment(TextAlignment.CENTER);
+		t2.setFont(new Font(20));
+		t2.setText("Phase 1");
+		nodes.getChildren().addAll(t,t2);
+		
+		   
+	    
 		
 		return nodes;
 	}

@@ -4,27 +4,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class Controller { // controller for the MVC model
-	public static Boolean secondclick = false;
-	public static Point firstpoint;
-	public static Paint firstcolor;
+	private static Boolean secondclick = false;
+	private static Point firstpoint;
+	private static Paint firstcolor;
 	private static int redcounter;
 	private static int bluecounter;
-	public static int firstI;
-	public static int firstJ;
-	public static void getColorCount(){
-		for (int i=0;i<Model.numMensMorris/3;i++){
-			for (int j=0; j<8 ; j++){
-				if(Model.getboardState(i,j).circle.getFill().equals(Color.RED)){
+
+
+	public static void getColorCount() {
+		for (int i = 0; i < Model.numMensMorris / 3; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (Model.getboardState(i, j).circle.getFill().equals(Color.RED)) {
 					redcounter++;
-				}
-				else if (Model.getboardState(i,j).circle.getFill().equals(Color.BLUE)){
+				} else if (Model.getboardState(i, j).circle.getFill().equals(Color.BLUE)) {
 					bluecounter++;
 				}
 			}
-			
+
 		}
-	}		
-	
+	}
+
 	public static void redbutton() {
 		if (Model.isSbox != true) {
 			Alert alert = new Alert(AlertType.INFORMATION);
@@ -51,6 +50,7 @@ public class Controller { // controller for the MVC model
 	}
 
 	public static void newgameButton() {
+
 		Model.NewGame = true;
 		Model.isSbox = false;
 		turnRandomizer();
@@ -139,6 +139,7 @@ public class Controller { // controller for the MVC model
 																	// sandbox
 																	// mode is
 																	// on
+			
 			Model.isSbox = true;
 			if (!(p.circle.getFill().toString().equals("0x000000ff"))) {
 				Model.duplicate = true;
@@ -164,10 +165,9 @@ public class Controller { // controller for the MVC model
 		 * If a player forms a mill and needs to remove a piece of the opposite
 		 * color
 		 */
-		if (Model.rmPiece == true) {
-			Delete(p);
-		} else {
-			if (!(p.circle.getFill().toString().equals("0x000000ff"))) { // if
+		 else {
+			if 
+			 (!(p.circle.getFill().toString().equals(Color.BLACK))) { // if
 																			// space
 																			// is
 																			// not
@@ -279,6 +279,9 @@ public class Controller { // controller for the MVC model
 			}
 
 		}
+		if (Model.rmPiece == true) {
+			Delete(p);
+		}
 
 	}
 
@@ -315,6 +318,8 @@ public class Controller { // controller for the MVC model
 		/*
 		 * set state variables
 		 */
+		Model.t.setText("Place pieces in any order");
+		Model.t2.setText("Sandbox Mode");
 		Model.pickedcolor = "sBox";
 		Model.isSbox = true;
 		Model.NewGame = false;
@@ -347,29 +352,32 @@ public class Controller { // controller for the MVC model
 	public static void pointclicked2(Point p) {
 		// click: change color 1
 		// take click2: check if click2==valid
-		System.out.print(redcounter);
-		System.out.print(bluecounter);
-		if (redcounter==2){
-			Alert alert = new Alert(AlertType.INFORMATION);
+		if (redcounter == 2) {
+			Alert alert = new Alert(AlertType.INFORMATION); // game ends if
+															// there is only 2
+															// pieces left from
+															// one player
 			alert.setTitle("Information Dialog");
 			alert.setHeaderText("CELEBRATION");
 			alert.setContentText("GAME OVER: BLUE WINS!!!");
 			Model.t.setText("Blue won");
 			alert.showAndWait();
-			
-		}
-		else if(bluecounter==2) {
+
+		} else if (bluecounter == 2) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Information Dialog");
 			alert.setHeaderText("CELEBRATION");
 			alert.setContentText("GAME OVER: RED WINS!!!");
 			Model.t.setText("Red won");
 			alert.showAndWait();
-			
+
 		}
-		if (Model.rmPiece) {
+		if (Model.rmPiece) { // if rmPiece is set to true, run delete
 			Delete(p);
-		} else if (secondclick == false) {
+			Model.t.setText("Phase 2: Click a piece to move");
+		} else if (secondclick == false) { // if on the first click
+			Model.t.setText("Phase 2: Click a piece to move");
+			Model.t2.setText("Phase 2");
 			if (p.circle.getFill().equals(Color.BLACK)) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
@@ -396,14 +404,8 @@ public class Controller { // controller for the MVC model
 				return;
 			}
 			firstcolor = p.circle.getFill();
-			p.circle.setFill(Color.PALEVIOLETRED); // green to show selection
-			// System.out.print(firstcolor.toString());
-
-			firstI = p.getI();
-			firstJ = p.getJ();
+			p.circle.setFill(Color.PALEVIOLETRED); // highlight to show selection
 			firstpoint = p;
-			// System.out.print(firstI + firstJ);
-			// p.circle.setFill(Color.GREEN); //green to show selection
 			secondclick = true;
 			return;
 		}
@@ -420,17 +422,19 @@ public class Controller { // controller for the MVC model
 				if (Model.formedMill(p) == true) {
 					Model.rmPiece = true;
 					if (Model.PlayerTurn == true) {
+						Model.t.setText("Remove a red piece");
 						Model.pickedcolor = "removered";
 						Model.lastcolor = "blue";
 						redcounter--;
 					} else {
+						Model.t.setText("Remove a blue piece");
 						Model.pickedcolor = "removeblue";
 						Model.lastcolor = "red";
 						bluecounter--;
 
 					}
 				} else {
-					
+
 					StartTurn();
 				}
 
