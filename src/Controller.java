@@ -366,7 +366,7 @@ public class Controller { // controller for the MVC model
 				return;
 			}
 
-			if (Model.PlayerTurn == true && p.circle.getFill() != (Color.BLUE)) {
+			if (Model.PlayerTurn == true && !p.circle.getFill().equals(Color.BLUE)) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
 				alert.setHeaderText("Invalid Piece");
@@ -374,7 +374,7 @@ public class Controller { // controller for the MVC model
 				alert.showAndWait();
 				return;
 			}
-			if (Model.PlayerTurn == false && p.circle.getFill() != Color.RED) {
+			if (Model.PlayerTurn == false && !p.circle.getFill().equals(Color.RED)) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
 				alert.setHeaderText("Invalid Piece");
