@@ -57,8 +57,8 @@ public class Controller { // controller for the MVC model
 		Model.isSbox = false;
 		turnRandomizer();
 		Model.t.setText("Game in progress.");
-		if (Model.redCount >= 0 || Model.blueCount >= 0) {
-			Model.reset();
+		Model.reset();
+		if (Model.redCount >= 0 || Model.blueCount >= 0) {			
 			for (int i = 0; i < Model.numMensMorris / 3; i++) {
 				for (int j = 0; j < 8; j++) {
 					Model.getboardState(i, j).circle.setFill(Color.BLACK);
@@ -96,11 +96,10 @@ public class Controller { // controller for the MVC model
 	public static void Delete(Point p) {
 
 		if (Model.pickedcolor.equals("removered")) {
-			if (p.circle.getFill() == Color.RED) {
-				Model.getredpiecelist(Model.redCount - 1).setFill(Color.GREEN);
+			if (p.circle.getFill().equals(Color.RED)) {
 				p.circle.setFill(Color.BLACK);
+				Model.getredpiecelist(Model.redCount - 1).setFill(Color.GREEN);					
 				Model.rmPiece = false;
-
 				StartTurn();
 
 			} else {
@@ -114,7 +113,7 @@ public class Controller { // controller for the MVC model
 		}
 
 		else {
-			if (p.circle.getFill() == Color.BLUE) {
+			if (p.circle.getFill().equals(Color.BLUE)) {
 				p.circle.setFill(Color.BLACK);
 				Model.getbluepiecelist(Model.blueCount - 1).setFill(Color.GREEN);
 				Model.rmPiece = false;
@@ -136,8 +135,8 @@ public class Controller { // controller for the MVC model
 		 * series of methods for sandbox mode to determine whether a sequence is
 		 * valid
 		 */
-
-		if (Model.pickedcolor == "sBox" | Model.isSbox == true) { // check if
+		
+		if (Model.pickedcolor .equals( "sBox") | Model.isSbox == true) { // check if
 																	// sandbox
 																	// mode is
 																	// on
@@ -147,16 +146,16 @@ public class Controller { // controller for the MVC model
 				Model.duplicate = true;
 			}
 			// check for placing more than 6 pieces in total
-			else if (Model.redCount >= Model.numMensMorris && Model.pickedcolor == "red") {
+			else if (Model.redCount >= Model.numMensMorris && Model.pickedcolor .equals( "red")) {
 				Model.numPieces = true;
-			} else if (Model.blueCount >= Model.numMensMorris && Model.pickedcolor == "blue") {
+			} else if (Model.blueCount >= Model.numMensMorris && Model.pickedcolor.equals("blue")) {
 				Model.numPieces = true;
 			}
-			if (Model.pickedcolor == "red") {
+			if (Model.pickedcolor.equals( "red")) {
 				p.circle.setFill(Color.RED);
 				Model.redCount++;
 
-			} else if (Model.pickedcolor == "blue") {
+			} else if (Model.pickedcolor .equals("blue")) {
 				p.circle.setFill(Color.BLUE);
 				Model.blueCount++;
 
@@ -168,6 +167,10 @@ public class Controller { // controller for the MVC model
 		 * color
 		 */
 		 else {
+			 if (Model.rmPiece) {
+					Delete(p);
+				}
+			 else{
 			 
 			 if(!(p.circle.getFill().equals(Color.BLACK))) { // if space is not black
 				Alert alert = new Alert(AlertType.INFORMATION);
@@ -185,17 +188,17 @@ public class Controller { // controller for the MVC model
 																											// their
 																											// pieces
 				Model.phase = 2;
-				getColorCount();
+				getColorCount();				//color count for determining winner of phase 2. counts number of pieces on board after phase 1.
 			}
 			// check for placing more than 6 pieces in total
-			else if (Model.redCount >= Model.numMensMorris && Model.pickedcolor == "red") {
+			else if (Model.redCount >= Model.numMensMorris && Model.pickedcolor.equals("red")) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
 				alert.setHeaderText("You cannot place more than 6 pieces");
 				alert.setContentText("Please try using another color");
 				alert.showAndWait();
 
-			} else if (Model.blueCount >= Model.numMensMorris && Model.pickedcolor == "blue") {
+			} else if (Model.blueCount >= Model.numMensMorris && Model.pickedcolor.equals("blue")) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
 				alert.setHeaderText("You cannot place more than 6 pieces");
@@ -203,24 +206,12 @@ public class Controller { // controller for the MVC model
 				alert.showAndWait();
 
 			}
-
-			else if (Model.pickedcolor == "red") {
-				if (Model.lastcolor.equals("red")) { // for regular play, cannot
-														// place two of the same
-														// piece in a row
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Information Dialog");
-					alert.setHeaderText("It is the blue players turn");
-					alert.setContentText("Please try using another color");
-					alert.showAndWait();
-				} else {
+			 
+			else if (Model.pickedcolor.equals("red")) {				
+				
 					p.circle.setFill(Color.RED); // set point to red
-					Model.getredpiecelist(0 + Model.redCount).setFill(Color.BEIGE); // remove
-																					// sidepiece
+					Model.getredpiecelist(0 + Model.redCount).setFill(Color.BEIGE); // remove sidepiece																					
 					Model.redCount++;
-
-					// System.out.println(p.circle.getCenterX()+"
-					// "+p.circle.getCenterY());
 					if (Model.formedMill(p)) {
 						Model.rmPiece = true;
 						Model.pickedcolor = "removeblue";
@@ -230,28 +221,20 @@ public class Controller { // controller for the MVC model
 						alert.setHeaderText("You can now remove a blue disc");
 						alert.setContentText("Click on a blue disc to remove it.");
 						alert.showAndWait();
-					} else {
+					} 
+					else {
 						StartTurn();
 						Model.lastcolor = "red";
 						if (Model.redCount >= Model.numMensMorris && Model.blueCount >= Model.numMensMorris) {
 							Model.phase = 2;
 							getColorCount();
 						}
-					}
+					
 				}
 			}
 
-			else if (Model.pickedcolor == "blue") { // for regular play, cannot
-													// place two of the same
-													// piece in a row
-				if (Model.lastcolor.equals("blue")) {
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Information Dialog");
-					alert.setHeaderText("It is the red players turn");
-					alert.setContentText("Please try using another color");
-					alert.showAndWait();
-				} else {
-					p.circle.setFill(Color.BLUE);
+			else if (Model.pickedcolor.equals("blue")) { // for regular play, cannot place two of the same piece in a row		
+					p.circle.setFill(Color.BLUE);                                         
 					Model.getbluepiecelist(0 + Model.blueCount).setFill(Color.BEIGE);
 					Model.blueCount++;
 
@@ -273,12 +256,10 @@ public class Controller { // controller for the MVC model
 							getColorCount();
 						}
 					}
-				}
+				
 			}
 
 		}
-		if (Model.rmPiece == true) {
-			Delete(p);
 		}
 
 	}
@@ -385,7 +366,7 @@ public class Controller { // controller for the MVC model
 				return;
 			}
 
-			if (Model.PlayerTurn == true && p.circle.getFill() != Color.BLUE) {
+			if (Model.PlayerTurn == true && p.circle.getFill() != (Color.BLUE)) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
 				alert.setHeaderText("Invalid Piece");

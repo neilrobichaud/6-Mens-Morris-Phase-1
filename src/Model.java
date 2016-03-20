@@ -271,8 +271,39 @@ public class Model {
 		t2.setText("Phase 1");
 		nodes.getChildren().addAll(t,t2);
 		
-		   
-	    
+		Button savegame = new Button("Save Game"); // savegame button
+		savegame.setTranslateX(700);
+		savegame.setTranslateY(100);
+		savegame.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					Controller.savegameButton();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // call controller method
+			}
+		});
+
+		nodes.getChildren().add(savegame);
+		
+		Button loadgame = new Button("Load Game"); // loadgame button
+		loadgame.setTranslateX(700);
+		loadgame.setTranslateY(130);
+		loadgame.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				try {
+					Controller.loadgameButton();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // call controller method
+			}
+		});
+
+		nodes.getChildren().add(loadgame);			    
 		
 		return nodes;
 	}
@@ -285,6 +316,7 @@ public class Model {
 		rmPiece = false;
 		lastcolor = "white";
 		pickedcolor = "black";
+		phase = 1;
 
 	}
 	public static void saveGame()throws IOException{
@@ -295,6 +327,8 @@ public class Model {
 		in.write(redCount+"");
 		in.newLine();
 		in.write(blueCount+"");
+		in.newLine();
+		in.write(phase+"");
 		in.newLine();
 		in.write(duplicate+"");
 		in.newLine();
@@ -331,7 +365,7 @@ public class Model {
 		in.newLine();
 		in.close();
 	}
-	public static void loadGame()throws IOException{
+	public static void loadGame()throws IOException{		
 		BufferedReader in = new BufferedReader(new FileReader(new File("data.txt")));
 		isSbox=false;
 		NewGame=true;
@@ -341,11 +375,13 @@ public class Model {
 		
 		redCount=Integer.parseInt(in.readLine());
 		blueCount=Integer.parseInt(in.readLine());
+		phase = Integer.parseInt(in.readLine());
 		duplicate=Boolean.parseBoolean(in.readLine());
 		numPieces=Boolean.parseBoolean(in.readLine());
 		rmPiece=Boolean.parseBoolean(in.readLine());
-		lastcolor=in.readLine();
+		lastcolor=in.readLine();		
 		pickedcolor=in.readLine();
+		
 		String [] bpcolors=in.readLine().split(",");
 		String [] rpcolors=in.readLine().split(",");
 		String [] bscolors=in.readLine().split(",");
