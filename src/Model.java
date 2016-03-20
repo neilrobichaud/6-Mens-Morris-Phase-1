@@ -1,3 +1,10 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -279,6 +286,84 @@ public class Model {
 		lastcolor = "white";
 		pickedcolor = "black";
 
+	}
+	public static void saveGame()throws IOException{
+		BufferedWriter in = new BufferedWriter(new FileWriter(new File("data.txt")));
+		/*To store redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
+		 * 
+		 */
+		in.write(redCount+"");
+		in.newLine();
+		in.write(blueCount+"");
+		in.newLine();
+		in.write(duplicate+"");
+		in.newLine();
+		in.write(numPieces+"");
+		in.newLine();
+		in.write(rmPiece+"");
+		in.newLine();
+		in.write(lastcolor);
+		in.newLine();
+		in.write(pickedcolor);
+		in.newLine();
+		String bplist="";
+		String rplist="";
+		String bstate="";
+		for(int i=0;i<bluepiecelist.length;i++){
+			
+			bplist=bplist+bluepiecelist[i].getFill()+",";
+		}
+		for(int i=0;i<redpiecelist.length;i++){
+			
+			rplist=rplist+redpiecelist[i].getFill()+",";
+		}
+		for(int o=0;o<boardState.length;o++){
+			for(int p=0;p<boardState[o].length;p++){
+				
+				bstate=bstate+boardState[o][p].circle.getFill()+",";
+			}
+		}
+		in.write(bplist);
+		in.newLine();
+		in.write(rplist);
+		in.newLine();
+		in.write(bstate);
+		in.newLine();
+		in.close();
+	}
+	public static void loadGame()throws IOException{
+		BufferedReader in = new BufferedReader(new FileReader(new File("data.txt")));
+		isSbox=false;
+		NewGame=true;
+		/*To get redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
+		 * 
+		 */
+		
+		redCount=Integer.parseInt(in.readLine());
+		blueCount=Integer.parseInt(in.readLine());
+		duplicate=Boolean.parseBoolean(in.readLine());
+		numPieces=Boolean.parseBoolean(in.readLine());
+		rmPiece=Boolean.parseBoolean(in.readLine());
+		lastcolor=in.readLine();
+		pickedcolor=in.readLine();
+		String [] bpcolors=in.readLine().split(",");
+		String [] rpcolors=in.readLine().split(",");
+		String [] bscolors=in.readLine().split(",");
+		for(int i=0;i<bluepiecelist.length;i++){
+			bluepiecelist[i].setFill(Color.web(bpcolors[i]));
+		}
+		for(int i=0;i<redpiecelist.length;i++){
+			redpiecelist[i].setFill(Color.web(rpcolors[i]));
+		}
+		int k=-1;
+		for(int o=0;o<boardState.length;o++){
+			for(int p=0;p<boardState[o].length;p++){
+				k++;
+				boardState[o][p].circle.setFill(Color.web(bscolors[k]));
+			}
+		}
+		in.close();
+		
 	}
 
 }

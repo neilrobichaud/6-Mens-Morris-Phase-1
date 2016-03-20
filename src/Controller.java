@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
@@ -166,12 +168,8 @@ public class Controller { // controller for the MVC model
 		 * color
 		 */
 		 else {
-			if 
-			 (!(p.circle.getFill().toString().equals(Color.BLACK))) { // if
-																			// space
-																			// is
-																			// not
-																			// blank
+			 
+			 if(!(p.circle.getFill().equals(Color.BLACK))) { // if space is not black
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
 				alert.setHeaderText("You cannot place one piece on top of another");
@@ -449,6 +447,7 @@ public class Controller { // controller for the MVC model
 	}
 
 	public static boolean inReach(Point x, Point y) {
+
 		if (x.getI() == y.getI()) { // if on the same shell
 			if (x.getJ() == 0 && (y.getJ() == 7 || y.getJ() == 1)) {// check if
 																	// J is
@@ -488,5 +487,29 @@ public class Controller { // controller for the MVC model
 			}
 		}
 		return false; // if none of the above cases happen return false
+	}
+	public static void savegameButton()throws IOException{
+		
+		Model.saveGame();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Information Dialog");
+		alert.setHeaderText("Game has been saved.");
+		alert.setContentText("Click Load game to access the saved game.");
+		alert.showAndWait();
+		
+	}
+	public static void loadgameButton()throws IOException{
+		Model.loadGame();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Information Dialog");
+		alert.setHeaderText("Game has been loaded.");
+		if(Model.pickedcolor.equals("red")){
+			alert.setContentText("It is now red's turn.");
+		}
+		else{
+			alert.setContentText("It is now blue's turn.");
+		}
+		
+		alert.showAndWait();
 	}
 }
