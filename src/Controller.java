@@ -130,7 +130,7 @@ public class Controller { // controller for the MVC model
 		}
 	}
 
-	public static void pointclicked(Point p) {
+	public static void pointclicked(Point p) { //if a point is clicked in phase 1 use this method
 		/*
 		 * series of methods for sandbox mode to determine whether a sequence is
 		 * valid
@@ -328,7 +328,7 @@ public class Controller { // controller for the MVC model
 		}
 	}
 
-	public static void pointclicked2(Point p) {
+	public static void pointclicked2(Point p) {	//if a point is clicked in phase 2 use this method
 		// click: change color 1
 		// take click2: check if click2==valid
 		if (redcounter == 2) {
