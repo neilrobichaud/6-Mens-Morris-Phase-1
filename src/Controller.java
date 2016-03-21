@@ -12,7 +12,9 @@ public class Controller { // controller for the MVC model
 	private static int redcounter;
 	private static int bluecounter;
 
-
+/*
+ * method to count number of blue and red pieces on the board at the end of phase 1
+ */
 	public static void getColorCount() {
 		for (int i = 0; i < Model.numMensMorris / 3; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -25,7 +27,9 @@ public class Controller { // controller for the MVC model
 
 		}
 	}
-
+/*
+ * redbutton control to be used in sandbox mode
+ */
 	public static void redbutton() {
 		if (Model.isSbox != true) {
 			Alert alert = new Alert(AlertType.INFORMATION);
@@ -38,7 +42,9 @@ public class Controller { // controller for the MVC model
 			Model.pickedcolor = "red";
 		}
 	}
-
+/*
+ * same as redbutton
+ */
 	public static void bluebutton() {
 		if (Model.isSbox != true) {
 			Alert alert = new Alert(AlertType.INFORMATION);
@@ -50,7 +56,9 @@ public class Controller { // controller for the MVC model
 			Model.pickedcolor = "blue";
 		}
 	}
-
+/*
+ * resets the board and calls reset() method to reset variables. Displays a message that picks which player will go first.
+ */
 	public static void newgameButton() {
 
 		Model.NewGame = true;
@@ -92,7 +100,9 @@ public class Controller { // controller for the MVC model
 		}
 
 	}
-
+/*
+ * Deletes the selected point and colors the corresponding sidepiece green
+ */
 	public static void Delete(Point p) {
 
 		if (Model.pickedcolor.equals("removered")) {
@@ -129,7 +139,9 @@ public class Controller { // controller for the MVC model
 
 		}
 	}
-
+/*
+ * all controller logic for a point in phase 1. Accepts cases for sandbox mode and removing a piece
+ */
 	public static void pointclicked(Point p) { //if a point is clicked in phase 1 use this method
 		/*
 		 * series of methods for sandbox mode to determine whether a sequence is
@@ -263,7 +275,9 @@ public class Controller { // controller for the MVC model
 		}
 
 	}
-
+/*
+ * the validation button for sandbox mode
+ */
 	public static void validButton() {
 		/*
 		 * check the various state variables to find whether a valid sequence
@@ -292,7 +306,9 @@ public class Controller { // controller for the MVC model
 			}
 		}
 	}
-
+/*
+ * button used to switch to sandbox mode
+ */
 	public static void sBoxButtonControl() {
 		/*
 		 * set state variables
@@ -303,7 +319,9 @@ public class Controller { // controller for the MVC model
 		Model.isSbox = true;
 		Model.NewGame = false;
 	}
-
+/*
+ * randomly pick starting player
+ */
 	public static void turnRandomizer() {
 		/*
 		 * create a random turn start
@@ -314,7 +332,9 @@ public class Controller { // controller for the MVC model
 		else
 			Model.PlayerTurn = false;// red
 	}
-
+/*
+ * switches which players turn it is
+ */
 	public static void StartTurn() {
 		/*
 		 * switch the player turn
@@ -327,7 +347,9 @@ public class Controller { // controller for the MVC model
 			Model.pickedcolor = "blue";
 		}
 	}
-
+/*
+ * all controller logic for a point clicked in phase 2
+ */
 	public static void pointclicked2(Point p) {	//if a point is clicked in phase 2 use this method
 		// click: change color 1
 		// take click2: check if click2==valid
@@ -426,7 +448,9 @@ public class Controller { // controller for the MVC model
 		}
 
 	}
-
+/*
+ * checks whether a point can move to another location, checking for distance and board restraints
+ */
 	public static boolean inReach(Point x, Point y) {
 
 		if (x.getI() == y.getI()) { // if on the same shell
@@ -469,6 +493,9 @@ public class Controller { // controller for the MVC model
 		}
 		return false; // if none of the above cases happen return false
 	}
+/*
+ * save button to save current boardstate	
+ */
 	public static void savegameButton()throws IOException{
 		
 		Model.saveGame();
@@ -479,6 +506,9 @@ public class Controller { // controller for the MVC model
 		alert.showAndWait();
 		
 	}
+/*
+ * load game to load game state from the text file	
+ */
 	public static void loadgameButton()throws IOException{
 		Model.loadGame();
 		Alert alert = new Alert(AlertType.INFORMATION);
