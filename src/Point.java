@@ -43,7 +43,7 @@ public class Point extends StackPane{
 					if (Model.phase == 1){
 						Controller.pointclicked(p);			//calls controller method	
 					}  
-					else if (Model.phase == 2){
+					else if (Model.phase == 2){				//controller method for phase 2
 						Controller.pointclicked2(p);
 					}
 					}

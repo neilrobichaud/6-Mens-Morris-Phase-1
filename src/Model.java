@@ -52,11 +52,15 @@ public class Model {
 	public static Circle getbluepiecelist(int i) {
 		return bluepiecelist[i];
 	}
-
+/*
+ * getter for a circle on the side of the board
+ */
 	public static Circle getredpiecelist(int i) {
 		return redpiecelist[i];
 	}
-
+/*
+ * returns a specific point in the board array
+ */
 	public static Point getboardState(int i, int j) {
 		return boardState[i][j];
 	}
@@ -307,7 +311,9 @@ public class Model {
 		
 		return nodes;
 	}
-
+/*
+ * resets all state variables for a new game
+ */
 	public static void reset() { // reset the board to the default state
 		redCount = 0;
 		blueCount = 0;
@@ -319,6 +325,9 @@ public class Model {
 		phase = 1;
 
 	}
+/*
+ * stores state variables into a text file	
+ */
 	public static void saveGame()throws IOException{
 		BufferedWriter in = new BufferedWriter(new FileWriter(new File("data.txt")));
 		/*To store redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
@@ -365,6 +374,9 @@ public class Model {
 		in.newLine();
 		in.close();
 	}
+/*
+ * loads txt file values into state variables
+ */
 	public static void loadGame()throws IOException{		
 		BufferedReader in = new BufferedReader(new FileReader(new File("data.txt")));
 		isSbox=false;
