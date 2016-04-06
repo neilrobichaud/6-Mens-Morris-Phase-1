@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -11,10 +12,12 @@ public class Controller { // controller for the MVC model
 	private static Paint firstcolor;
 	private static int redcounter;
 	private static int bluecounter;
+	public static Point millfromPoint;
+	public static Point milltoPoint;
 
 	/*
 	 * method to count number of blue and red pieces on the board at the end of phase 1
-	 */
+	~ */
 	public static void getColorCount() {
 		for (int i = 0; i < Model.numMensMorris / 3; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -229,7 +232,7 @@ public class Controller { // controller for the MVC model
 		 * color
 		 */
 		else {
-			
+
 			if (Model.isAIgame == true && Model.PlayerTurn == false){ //if its an AI game and its reds turn
 				boolean placed = false;
 				boolean aimill = false;
@@ -241,11 +244,11 @@ public class Controller { // controller for the MVC model
 								Model.getboardState(i, j).circle.setFill(Color.RED);	
 								placed=true;
 								aimill=true;
-								
+
 								Model.getredpiecelist(0 + Model.redCount).setFill(Color.BEIGE); // remove
 								// sidepiece
 								Model.redCount++;
-								
+
 							}
 						}
 
@@ -273,14 +276,14 @@ public class Controller { // controller for the MVC model
 					}
 					for (int j = 0; j < 8; j++) {
 						if(Model.getboardState(index, j).checkColor().equals(Color.BLUE) && removed==false){
-							
+
 							Model.getboardState(index, j).circle.setFill(Color.BLACK);	
 							removed=true;
-							
+
 						}
-						
+
 					}
-					
+
 				}
 				if(placed==false){
 					for (int i = 0; i < Model.numMensMorris/3; i++) { // loop through
@@ -315,9 +318,9 @@ public class Controller { // controller for the MVC model
 						}
 					}
 					int max=0;
-					int index=0;
+					int index=3;
 					for (int k =0; k<Model.numMensMorris/3; k++){
-						if (numRedOnShell[k] > max && numBlackOnShell[k]!=0){
+						if (numRedOnShell[k] >= max && numBlackOnShell[k]!=0){
 							max = numRedOnShell[k];
 							index=k;
 						}
@@ -330,7 +333,7 @@ public class Controller { // controller for the MVC model
 							// sidepiece
 							Model.redCount++;
 						}
-						
+
 					}
 				}
 				StartTurn();
@@ -339,8 +342,8 @@ public class Controller { // controller for the MVC model
 					Model.phase = 2;
 					getColorCount();
 				}
-				
-				
+
+
 				// check for rows with possible millform, if not found check for
 				// blocking mills
 			} else {
@@ -358,14 +361,7 @@ public class Controller { // controller for the MVC model
 						alert.setContentText("Please try again");
 						alert.showAndWait();
 
-					} else if (Model.redCount >= Model.numMensMorris && Model.blueCount >= Model.numMensMorris) { // if
-						// each
-						// player
-						// has
-						// played
-						// all
-						// their
-						// pieces
+					} else if (Model.redCount >= Model.numMensMorris && Model.blueCount >= Model.numMensMorris) { // if each player has placed all their pieces
 						Model.phase = 2;
 						getColorCount(); // color count for determining winner
 						// of phase 2. counts number of
@@ -414,14 +410,7 @@ public class Controller { // controller for the MVC model
 						}
 					}
 
-					else if (Model.pickedcolor.equals("blue")) { // for regular
-						// play,
-						// cannot
-						// place two
-						// of the
-						// same
-						// piece in
-						// a row
+					else if (Model.pickedcolor.equals("blue")) { // for regular play cannot place two of the same piece in a row
 						p.circle.setFill(Color.BLUE);
 						Model.getbluepiecelist(0 + Model.blueCount).setFill(Color.BEIGE);
 						Model.blueCount++;
@@ -533,6 +522,15 @@ public class Controller { // controller for the MVC model
 	 * all controller logic for a point clicked in phase 2
 	 */
 	public static void pointclicked2(Point p) { // if a point is clicked in
+		millfromPoint=null;
+		milltoPoint=null;
+		if (Model.PlayerTurn){
+			Model.t2.setText("blue turn");
+		}
+		else{
+			Model.t2.setText("red turn");
+		}
+
 		// phase 2 use this method
 		// click: change color 1
 		// take click2: check if click2==valid
@@ -556,86 +554,134 @@ public class Controller { // controller for the MVC model
 			alert.showAndWait();
 
 		}
-		if (Model.isAIgame==true){
+		if (Model.isAIgame==true && Model.PlayerTurn==false){
 			//loop through boardState array
 			//check each red piece, create list of possible moves check for moves that will form mills
 			//if you find a mill move do it, otherwise pick first move in list
-		}
-		else{
-		if (Model.rmPiece) { // if rmPiece is set to true, run delete
-			Delete(p);
-			Model.t.setText("Phase 2: Click a piece to move");
-		} else if (secondclick == false) { // if on the first click
-			Model.t.setText("Phase 2: Click a piece to move");
-			Model.t2.setText("Phase 2");
-			if (p.circle.getFill().equals(Color.BLACK)) {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information Dialog");
-				alert.setHeaderText("Invalid Piece");
-				alert.setContentText("You can only move red or blue discs");
-				alert.showAndWait();
-				return;
-			}
+			boolean placed = false;
 
-			if (Model.PlayerTurn == true && !p.circle.getFill().equals(Color.BLUE)) {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information Dialog");
-				alert.setHeaderText("Invalid Piece");
-				alert.setContentText("It's blue's turn!");
-				alert.showAndWait();
-				return;
-			}
-			if (Model.PlayerTurn == false && !p.circle.getFill().equals(Color.RED)) {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information Dialog");
-				alert.setHeaderText("Invalid Piece");
-				alert.setContentText("It's red's turn");
-				alert.showAndWait();
-				return;
-			}
-			firstcolor = p.circle.getFill();
-			p.circle.setFill(Color.PALEVIOLETRED); // highlight to show
-			// selection
-			firstpoint = p;
-			secondclick = true;
-			return;
-		}
-		if (secondclick == true) {
-
-			if (p.circle.getFill().equals(Color.BLACK) && inReach(firstpoint, p)) { // if
-				// the
-				// piece
-				// is
-				// black
-				p.circle.setFill(firstcolor);
-				firstpoint.circle.setFill(Color.BLACK);
-
-				if (Model.formedMill(p) == true) {
-					Model.rmPiece = true;
-					if (Model.PlayerTurn == true) {
-						Model.t.setText("Remove a red piece");
-						Model.pickedcolor = "removered";
-						Model.lastcolor = "blue";
-						redcounter--;
-					} else {
-						Model.t.setText("Remove a blue piece");
-						Model.pickedcolor = "removeblue";
-						Model.lastcolor = "red";
-						bluecounter--;
-
+			for (int i = 0;i<Model.numMensMorris/3;i++){
+				for (int j=0;j<8;j++){
+					if (Model.getboardState(i, j).checkColor().equals(Color.RED)){
+						if(checkMillMoves(Model.getboardState(i, j))==true && placed==false){
+							millfromPoint.circle.setFill(Color.BLACK);
+							milltoPoint.circle.setFill(Color.RED);
+							placed=true;
+						}
 					}
-				} else {
-
-					StartTurn();
 				}
 
-			} else {
-				firstpoint.circle.setFill(firstcolor); // if the second point is
-				// not valid reset first
-				// point
 			}
-			secondclick = false;
+			if (placed == false){
+				for (int i = 0;i<Model.numMensMorris/3;i++){
+					for (int j=0;j<8;j++){
+						if (Model.getboardState(i, j).checkColor().equals(Color.RED)){
+							if(checkMillMoves(Model.getboardState(i, j))==true && placed==false){
+								millfromPoint.circle.setFill(Color.BLACK);
+								milltoPoint.circle.setFill(Color.RED);
+								placed=true;
+							}
+						}						
+					}
+
+				}
+				if (placed == false && millfromPoint != null){
+					millfromPoint.circle.setFill(Color.BLACK);
+					milltoPoint.circle.setFill(Color.RED);
+					placed=true;
+				}
+				else{					
+					Alert alert = new Alert(AlertType.INFORMATION); // game ends if
+					// there is only 2
+					// pieces left from
+					// one player
+
+					alert.setTitle("Information Dialog");
+					alert.setHeaderText("CELEBRATION");
+					alert.setContentText("STALEMATE");
+					Model.t.setText("NO MOVES");
+					alert.showAndWait();
+				}
+
+			}
+			StartTurn();
+
 		}
+		else{
+			if (Model.rmPiece) { // if rmPiece is set to true, run delete
+				Delete(p);
+				Model.t.setText("Phase 2: Click a piece to move");
+			} else if (secondclick == false) { // if on the first click
+				Model.t.setText("Phase 2: Click a piece to move");
+				Model.t2.setText("Phase 2");
+				if (p.circle.getFill().equals(Color.BLACK)) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Information Dialog");
+					alert.setHeaderText("Invalid Piece");
+					alert.setContentText("You can only move red or blue discs");
+					alert.showAndWait();
+					return;
+				}
+
+				if (Model.PlayerTurn == true && !p.circle.getFill().equals(Color.BLUE)) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Information Dialog");
+					alert.setHeaderText("Invalid Piece");
+					alert.setContentText("It's blue's turn!");
+					alert.showAndWait();
+					return;
+				}
+				if (Model.PlayerTurn == false && !p.circle.getFill().equals(Color.RED)) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Information Dialog");
+					alert.setHeaderText("Invalid Piece");
+					alert.setContentText("It's red's turn");
+					alert.showAndWait();
+					return;
+				}
+				firstcolor = p.circle.getFill();
+				p.circle.setFill(Color.PALEVIOLETRED); // highlight to show
+				// selection
+				firstpoint = p;
+				secondclick = true;
+				return;
+			}
+			if (secondclick == true) {
+
+				if (p.circle.getFill().equals(Color.BLACK) && inReach(firstpoint, p)) { // if
+					// the
+					// piece
+					// is
+					// black
+					p.circle.setFill(firstcolor);
+					firstpoint.circle.setFill(Color.BLACK);
+
+					if (Model.formedMill(p) == true) {
+						Model.rmPiece = true;
+						if (Model.PlayerTurn == true) {
+							Model.t.setText("Remove a red piece");
+							Model.pickedcolor = "removered";
+							Model.lastcolor = "blue";
+							redcounter--;
+						} else {
+							Model.t.setText("Remove a blue piece");
+							Model.pickedcolor = "removeblue";
+							Model.lastcolor = "red";
+							bluecounter--;
+
+						}
+					} else {
+
+						StartTurn();
+					}
+
+				} else {
+					firstpoint.circle.setFill(firstcolor); // if the second point is
+					// not valid reset first
+					// point
+				}
+				secondclick = false;
+			}
 		}
 
 	}
@@ -647,19 +693,9 @@ public class Controller { // controller for the MVC model
 	public static boolean inReach(Point x, Point y) {
 
 		if (x.getI() == y.getI()) { // if on the same shell
-			if (x.getJ() == 0 && (y.getJ() == 7 || y.getJ() == 1)) {// check if
-				// J is
-				// within
-				// one
-				// special
-				// case
+			if (x.getJ() == 0 && (y.getJ() == 7 || y.getJ() == 1)) {// check if j is within one special case			
 				return true;
-			} else if (y.getJ() == 0 && (x.getJ() == 7 || x.getJ() == 1)) {// check
-				// if
-				// J
-				// is
-				// within
-				// one
+			} else if (y.getJ() == 0 && (x.getJ() == 7 || x.getJ() == 1)) {
 				return true;
 			} else if (Math.abs(x.getJ() - y.getJ()) == 1) { // else if within
 				// one space of
@@ -667,18 +703,7 @@ public class Controller { // controller for the MVC model
 				return true;
 			}
 		} else if (x.getI() != y.getI()) { // not on the same shell
-			if (x.getJ() % 2 != 0 && y.getJ() % 2 != 0 && Math.abs(x.getI() - y.getI()) == 1) { // if
-				// the
-				// j
-				// is
-				// odd
-				// and
-				// they
-				// are
-				// only
-				// one
-				// shell
-				// away
+			if (x.getJ() % 2 != 0 && y.getJ() % 2 != 0 && Math.abs(x.getI() - y.getI()) == 1) { // if the j is odd and they are only one shell away
 				if (x.getJ() == y.getJ()) { // if the j's are equal
 					return true;
 				}
@@ -705,6 +730,7 @@ public class Controller { // controller for the MVC model
 	 * load game to load game state from the text file
 	 */
 	public static void loadgameButton() throws IOException {
+
 		Model.loadGame();
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Information Dialog");
@@ -717,4 +743,155 @@ public class Controller { // controller for the MVC model
 
 		alert.showAndWait();
 	}
+	public static boolean checkMillMoves(Point x){ //return a
+		System.out.print("x");
+		boolean millfound = false;
+		int i = x.getI();												//the location of x in the boardState array
+		int j = x.getJ();
+		if (j % 2 == 0) { // if point is a corner piece
+			if (j == 0) { // special case for 0 corner
+				if (Model.getboardState(i, j + 7).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j + 7),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 7);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 7);
+
+					}
+				}
+
+				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j + 1),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+
+					}
+				}		
+
+			} else {
+
+				if (Model.getboardState(i, j -1).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j -1),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j -1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j -1);
+					}
+				}
+
+				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j + 1),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+					}
+				}
+			}
+
+		}
+		else{
+			if (j == 7) { // special case for 0 corner
+				if (Model.getboardState(i, j - 7).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j - 7),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j - 7);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j - 7);
+
+					}
+				}
+
+				if (Model.getboardState(i,j-1).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j - 1),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j - 1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j - 1);
+
+					}
+				}		
+
+			}
+			else{
+				if (Model.getboardState(i, j -1).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j -1),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j -1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j -1);
+					}
+				}
+
+				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
+					if(Model.AIformedMill(Model.getboardState(i, j + 1),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+					}
+				}
+				if ((Model.numMensMorris/3)-1 > i){						//if not on outmost shell
+					if (Model.getboardState(i+1,j).checkColor().equals(Color.BLACK)){
+						if(Model.AIformedMill(Model.getboardState(i+1, j),Color.RED)){
+							millfound = true;
+							millfromPoint = Model.getboardState(i, j);
+							milltoPoint = Model.getboardState(i+1, j );
+						}
+						else{
+							millfromPoint = Model.getboardState(i, j);
+							milltoPoint = Model.getboardState(i+1, j);
+
+						}
+					}
+				}
+
+				if (i>0){											//if not on inmost shell
+					if (Model.getboardState(i-1,j).checkColor().equals(Color.BLACK)){	
+						if(Model.AIformedMill(Model.getboardState(i-1, j),Color.RED)){
+							millfound = true;
+							millfromPoint = Model.getboardState(i, j);
+							milltoPoint = Model.getboardState(i-1, j);
+						}
+						else{
+							millfromPoint = Model.getboardState(i, j);
+							milltoPoint = Model.getboardState(i-1, j);
+
+						}
+					}
+
+				}
+
+			}
+		}
+
+		return millfound;
+	}
 }
+
