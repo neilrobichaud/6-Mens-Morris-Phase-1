@@ -743,8 +743,7 @@ public class Controller { // controller for the MVC model
 
 		alert.showAndWait();
 	}
-	private static boolean checkMillMoves(Point x){ //return a
-		System.out.print("x");
+	private static boolean checkMillMoves(Point x){ //return a		
 		boolean millfound = false;
 		int i = x.getI();												//the location of x in the boardState array
 		int j = x.getJ();

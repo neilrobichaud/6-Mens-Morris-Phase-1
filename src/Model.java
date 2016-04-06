@@ -171,6 +171,11 @@ public class Model {
 		}
 
 		else if (j % 2 != 0) { // for 1,3,5,7 middle points
+			if (j==7){
+				if (boardState[i][j].checkColor().equals(boardState[i][j-1].checkColor())&& boardState[i][j].checkColor().equals(boardState[i][j-7].checkColor())){
+					millfound=true;
+				}
+			}
 			if (boardState[i][j].checkColor().equals(boardState[i][j - 1].checkColor())
 					&& boardState[i][j].checkColor().equals(boardState[i][j + 1].checkColor())) {
 				millfound = true;
