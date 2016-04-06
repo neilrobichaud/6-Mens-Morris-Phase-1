@@ -427,6 +427,8 @@ public class Model {
 		in.newLine();
 		in.write(pickedcolor);
 		in.newLine();
+		in.write(isAIgame+"");
+		in.newLine();
 		String bplist = "";
 		String rplist = "";
 		String bstate = "";
@@ -475,7 +477,7 @@ public class Model {
 		rmPiece = Boolean.parseBoolean(in.readLine());
 		lastcolor = in.readLine();
 		pickedcolor = in.readLine();
-
+		isAIgame=Boolean.parseBoolean(in.readLine());
 		String[] bpcolors = in.readLine().split(",");
 		String[] rpcolors = in.readLine().split(",");
 		String[] bscolors = in.readLine().split(",");
