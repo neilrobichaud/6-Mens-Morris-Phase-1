@@ -108,7 +108,7 @@ public class Controller { // controller for the MVC model
 	 * message that picks which player will go first.
 	 */
 	public static void newgameButton() {
-
+		Model.isAIgame=false;
 		Model.NewGame = true;
 		Model.isSbox = false;
 		turnRandomizer();
