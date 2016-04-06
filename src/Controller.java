@@ -252,7 +252,8 @@ public class Controller { // controller for the MVC model
 					}
 
 				}
-				if(aimill==true){
+				if(aimill==true){ //removing pieces
+					boolean removed=false;
 					int[] numBlueOnShell = new int[Model.numMensMorris/3];
 					for(int i=0;i<Model.numMensMorris/3;i++){
 						for (int j = 0; j < 8; j++) {
@@ -271,10 +272,10 @@ public class Controller { // controller for the MVC model
 						}
 					}
 					for (int j = 0; j < 8; j++) {
-						if(Model.getboardState(index, j).checkColor().equals(Color.BLUE)){
+						if(Model.getboardState(index, j).checkColor().equals(Color.BLUE) && removed==false){
 							
 							Model.getboardState(index, j).circle.setFill(Color.BLACK);	
-							placed=true;
+							removed=true;
 							
 						}
 						
@@ -325,6 +326,9 @@ public class Controller { // controller for the MVC model
 						if(Model.getboardState(index, j).checkColor().equals(Color.BLACK) && placed==false){
 							Model.getboardState(index, j).circle.setFill(Color.RED);	
 							placed=true;
+							Model.getredpiecelist(0 + Model.redCount).setFill(Color.BEIGE); // remove
+							// sidepiece
+							Model.redCount++;
 						}
 						
 					}
