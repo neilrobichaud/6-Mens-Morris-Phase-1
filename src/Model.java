@@ -43,6 +43,7 @@ public class Model {
 											// must be removed
 	public static boolean NewGame = false; // to keep track of whether newgame
 											// has been pressed
+	public static boolean isAIgame = false;
 	public static boolean isSbox = false; // is sandbox to keep track of whether
 											// it is in sandbox mode
 	public static String lastcolor = "white"; // the last color picked
@@ -52,17 +53,65 @@ public class Model {
 	public static Circle getbluepiecelist(int i) {
 		return bluepiecelist[i];
 	}
-/*
- * getter for a circle on the side of the board
- */
+
+	/*
+	 * getter for a circle on the side of the board
+	 */
 	public static Circle getredpiecelist(int i) {
 		return redpiecelist[i];
 	}
-/*
- * returns a specific point in the board array
- */
+
+	/*
+	 * returns a specific point in the board array
+	 */
 	public static Point getboardState(int i, int j) {
 		return boardState[i][j];
+	}
+
+	public static boolean AIformedMill(Point x,Color c) {// check if mill was formed
+													// with
+		// the last click
+		boolean millfound = false;
+		int i = x.getI();
+		int j = x.getJ();
+
+		if (j % 2 == 0) { // if point is a corner piece
+			if (j == 0) { // special case for 0 corner
+				if (c.equals(boardState[i][j + 7].checkColor())
+						&& c.equals(boardState[i][j + 6].checkColor())) {
+					millfound = true;
+				}
+
+				if (c.equals(boardState[i][j + 1].checkColor())
+						&& c.equals(boardState[i][j + 2].checkColor())) {
+					millfound = true;
+				}
+			} else if (j == 6) { // special case for 6 corner
+				if (c.equals(boardState[i][j - 1].checkColor())
+						&& c.equals(boardState[i][j - 2].checkColor())) {
+					millfound = true;
+				}
+
+				if (c.equals(boardState[i][j + 1].checkColor())
+						&& c.equals(boardState[i][j - 6].checkColor())) {
+					millfound = true;
+				}
+
+			} else {
+
+				if (c.equals(boardState[i][j - 1].checkColor())
+						&& c.equals(boardState[i][j - 2].checkColor())) {
+					millfound = true;
+				}
+
+				if (c.equals(boardState[i][j + 1].checkColor())
+						&& c.equals(boardState[i][j + 2].checkColor())) {
+					millfound = true;
+				}
+			}
+		}
+		return millfound;
+
 	}
 
 	public static boolean formedMill(Point x) {// check if mill was formed with
@@ -256,13 +305,13 @@ public class Model {
 		sboxButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				
+
 				Controller.sBoxButtonControl();
 			}
 		});
-		
+
 		nodes.getChildren().add(sboxButton);
-		
+
 		t = new Text();
 		t.setY(100);
 		t.setTextAlignment(TextAlignment.CENTER);
@@ -273,8 +322,8 @@ public class Model {
 		t2.setTextAlignment(TextAlignment.CENTER);
 		t2.setFont(new Font(20));
 		t2.setText("Phase 1");
-		nodes.getChildren().addAll(t,t2);
-		
+		nodes.getChildren().addAll(t, t2);
+
 		Button savegame = new Button("Save Game"); // savegame button
 		savegame.setTranslateX(700);
 		savegame.setTranslateY(100);
@@ -291,7 +340,7 @@ public class Model {
 		});
 
 		nodes.getChildren().add(savegame);
-		
+
 		Button loadgame = new Button("Load Game"); // loadgame button
 		loadgame.setTranslateX(700);
 		loadgame.setTranslateY(130);
@@ -306,14 +355,26 @@ public class Model {
 				} // call controller method
 			}
 		});
+		nodes.getChildren().add(loadgame);
 
-		nodes.getChildren().add(loadgame);			    
-		
+		Button AIgame = new Button("AI Game"); // loadgame button
+		AIgame.setTranslateX(350);
+		AIgame.setTranslateY(30);
+		AIgame.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				Controller.AIbutton();
+			}
+		});
+
+		nodes.getChildren().add(AIgame);
+
 		return nodes;
 	}
-/*
- * resets all state variables for a new game
- */
+
+	/*
+	 * resets all state variables for a new game
+	 */
 	public static void reset() { // reset the board to the default state
 		redCount = 0;
 		blueCount = 0;
@@ -325,45 +386,49 @@ public class Model {
 		phase = 1;
 
 	}
-/*
- * stores state variables into a text file	
- */
-	public static void saveGame()throws IOException{
+
+	/*
+	 * stores state variables into a text file
+	 */
+	public static void saveGame() throws IOException {
 		BufferedWriter in = new BufferedWriter(new FileWriter(new File("data.txt")));
-		/*To store redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
+		/*
+		 * To store
+		 * redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,
+		 * bluepiecelist,redpiecelist,boardstate
 		 * 
 		 */
-		in.write(redCount+"");
+		in.write(redCount + "");
 		in.newLine();
-		in.write(blueCount+"");
+		in.write(blueCount + "");
 		in.newLine();
-		in.write(phase+"");
+		in.write(phase + "");
 		in.newLine();
-		in.write(duplicate+"");
+		in.write(duplicate + "");
 		in.newLine();
-		in.write(numPieces+"");
+		in.write(numPieces + "");
 		in.newLine();
-		in.write(rmPiece+"");
+		in.write(rmPiece + "");
 		in.newLine();
 		in.write(lastcolor);
 		in.newLine();
 		in.write(pickedcolor);
 		in.newLine();
-		String bplist="";
-		String rplist="";
-		String bstate="";
-		for(int i=0;i<bluepiecelist.length;i++){
-			
-			bplist=bplist+bluepiecelist[i].getFill()+",";
+		String bplist = "";
+		String rplist = "";
+		String bstate = "";
+		for (int i = 0; i < bluepiecelist.length; i++) {
+
+			bplist = bplist + bluepiecelist[i].getFill() + ",";
 		}
-		for(int i=0;i<redpiecelist.length;i++){
-			
-			rplist=rplist+redpiecelist[i].getFill()+",";
+		for (int i = 0; i < redpiecelist.length; i++) {
+
+			rplist = rplist + redpiecelist[i].getFill() + ",";
 		}
-		for(int o=0;o<boardState.length;o++){
-			for(int p=0;p<boardState[o].length;p++){
-				
-				bstate=bstate+boardState[o][p].circle.getFill()+",";
+		for (int o = 0; o < boardState.length; o++) {
+			for (int p = 0; p < boardState[o].length; p++) {
+
+				bstate = bstate + boardState[o][p].circle.getFill() + ",";
 			}
 		}
 		in.write(bplist);
@@ -374,44 +439,48 @@ public class Model {
 		in.newLine();
 		in.close();
 	}
-/*
- * loads txt file values into state variables
- */
-	public static void loadGame()throws IOException{		
+
+	/*
+	 * loads txt file values into state variables
+	 */
+	public static void loadGame() throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(new File("data.txt")));
-		isSbox=false;
-		NewGame=true;
-		/*To get redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,bluepiecelist,redpiecelist,boardstate
+		isSbox = false;
+		NewGame = true;
+		/*
+		 * To get
+		 * redcount,bluecount,duplicate,numpieces,rmpiece,lastcolor,pickedcolor,
+		 * bluepiecelist,redpiecelist,boardstate
 		 * 
 		 */
-		
-		redCount=Integer.parseInt(in.readLine());
-		blueCount=Integer.parseInt(in.readLine());
+
+		redCount = Integer.parseInt(in.readLine());
+		blueCount = Integer.parseInt(in.readLine());
 		phase = Integer.parseInt(in.readLine());
-		duplicate=Boolean.parseBoolean(in.readLine());
-		numPieces=Boolean.parseBoolean(in.readLine());
-		rmPiece=Boolean.parseBoolean(in.readLine());
-		lastcolor=in.readLine();		
-		pickedcolor=in.readLine();
-		
-		String [] bpcolors=in.readLine().split(",");
-		String [] rpcolors=in.readLine().split(",");
-		String [] bscolors=in.readLine().split(",");
-		for(int i=0;i<bluepiecelist.length;i++){
+		duplicate = Boolean.parseBoolean(in.readLine());
+		numPieces = Boolean.parseBoolean(in.readLine());
+		rmPiece = Boolean.parseBoolean(in.readLine());
+		lastcolor = in.readLine();
+		pickedcolor = in.readLine();
+
+		String[] bpcolors = in.readLine().split(",");
+		String[] rpcolors = in.readLine().split(",");
+		String[] bscolors = in.readLine().split(",");
+		for (int i = 0; i < bluepiecelist.length; i++) {
 			bluepiecelist[i].setFill(Color.web(bpcolors[i]));
 		}
-		for(int i=0;i<redpiecelist.length;i++){
+		for (int i = 0; i < redpiecelist.length; i++) {
 			redpiecelist[i].setFill(Color.web(rpcolors[i]));
 		}
-		int k=-1;
-		for(int o=0;o<boardState.length;o++){
-			for(int p=0;p<boardState[o].length;p++){
+		int k = -1;
+		for (int o = 0; o < boardState.length; o++) {
+			for (int p = 0; p < boardState[o].length; p++) {
 				k++;
 				boardState[o][p].circle.setFill(Color.web(bscolors[k]));
 			}
 		}
 		in.close();
-		
+
 	}
 
 }
