@@ -556,6 +556,12 @@ public class Controller { // controller for the MVC model
 			alert.showAndWait();
 
 		}
+		if (Model.isAIgame==true){
+			//loop through boardState array
+			//check each red piece, create list of possible moves check for moves that will form mills
+			//if you find a mill move do it, otherwise pick first move in list
+		}
+		else{
 		if (Model.rmPiece) { // if rmPiece is set to true, run delete
 			Delete(p);
 			Model.t.setText("Phase 2: Click a piece to move");
@@ -629,6 +635,7 @@ public class Controller { // controller for the MVC model
 				// point
 			}
 			secondclick = false;
+		}
 		}
 
 	}
