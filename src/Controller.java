@@ -491,7 +491,7 @@ public class Controller { // controller for the MVC model
 	/*
 	 * randomly pick starting player
 	 */
-	public static void turnRandomizer() {
+	private static void turnRandomizer() {
 		/*
 		 * create a random turn start
 		 */
@@ -505,7 +505,7 @@ public class Controller { // controller for the MVC model
 	/*
 	 * switches which players turn it is
 	 */
-	public static void StartTurn() {
+	private static void StartTurn() {
 		/*
 		 * switch the player turn
 		 */
@@ -690,7 +690,7 @@ public class Controller { // controller for the MVC model
 	 * checks whether a point can move to another location, checking for
 	 * distance and board restraints
 	 */
-	public static boolean inReach(Point x, Point y) {
+	private static boolean inReach(Point x, Point y) {
 
 		if (x.getI() == y.getI()) { // if on the same shell
 			if (x.getJ() == 0 && (y.getJ() == 7 || y.getJ() == 1)) {// check if j is within one special case			
@@ -743,7 +743,7 @@ public class Controller { // controller for the MVC model
 
 		alert.showAndWait();
 	}
-	public static boolean checkMillMoves(Point x){ //return a
+	private static boolean checkMillMoves(Point x){ //return a
 		System.out.print("x");
 		boolean millfound = false;
 		int i = x.getI();												//the location of x in the boardState array
