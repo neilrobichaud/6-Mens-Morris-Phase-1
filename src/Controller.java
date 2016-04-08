@@ -37,6 +37,7 @@ public class Controller { // controller for the MVC model
 		Model.isSbox = false;
 		turnRandomizer();
 		Model.t.setText("Game in progress.");
+		Model.t2.setText("Computer is RED, click any point to trigger AI move.");
 		Model.reset();
 		if (Model.redCount >= 0 || Model.blueCount >= 0) {
 			for (int i = 0; i < Model.numMensMorris / 3; i++) {
@@ -157,7 +158,7 @@ public class Controller { // controller for the MVC model
 		if (Model.pickedcolor.equals("removered")) {
 			if (p.circle.getFill().equals(Color.RED)) {
 				p.circle.setFill(Color.BLACK);
-				Model.getredpiecelist(Model.redCount - 1).setFill(Color.GREEN);
+				Model.getredpiecelist(Model.redCount - 1).setFill(Color.PINK);
 				Model.rmPiece = false;
 				StartTurn();
 
@@ -174,7 +175,7 @@ public class Controller { // controller for the MVC model
 		else {
 			if (p.circle.getFill().equals(Color.BLUE)) {
 				p.circle.setFill(Color.BLACK);
-				Model.getbluepiecelist(Model.blueCount - 1).setFill(Color.GREEN);
+				Model.getbluepiecelist(Model.blueCount - 1).setFill(Color.LIGHTBLUE);
 				Model.rmPiece = false;
 				StartTurn();
 
@@ -227,7 +228,7 @@ public class Controller { // controller for the MVC model
 			}
 
 		}
-		
+
 		/*
 		 * Controller logic for AI game, Computer is always RED
 		 * 1. check if RED can form a mill
@@ -342,7 +343,8 @@ public class Controller { // controller for the MVC model
 
 					}
 				}
-				StartTurn();
+				StartTurn();				
+
 				Model.lastcolor = "red";
 				if (Model.redCount >= Model.numMensMorris && Model.blueCount >= Model.numMensMorris) {
 					Model.phase = 2;
@@ -529,13 +531,6 @@ public class Controller { // controller for the MVC model
 	public static void pointclicked2(Point p) { // if a point is clicked in
 		millfromPoint=null;
 		milltoPoint=null;
-		if (Model.PlayerTurn){
-			Model.t2.setText("blue turn");
-		}
-		else{
-			Model.t2.setText("red turn");
-		}
-
 		// phase 2 use this method
 		// click: change color 1
 		// take click2: check if click2==valid
@@ -564,7 +559,7 @@ public class Controller { // controller for the MVC model
 			//check each red piece, create list of possible moves check for moves that will form mills
 			//if you find a mill move do it, otherwise pick first move in list
 			boolean placed = false;
-
+			boolean aimill = false;
 			for (int i = 0;i<Model.numMensMorris/3;i++){
 				for (int j=0;j<8;j++){
 					if (Model.getboardState(i, j).checkColor().equals(Color.RED)){
@@ -572,53 +567,56 @@ public class Controller { // controller for the MVC model
 							millfromPoint.circle.setFill(Color.BLACK);
 							milltoPoint.circle.setFill(Color.RED);
 							placed=true;
+							aimill = true;
+							System.out.print("1");
+
 						}
 					}
 				}
 
 			}
-			if (placed == false){
-				for (int i = 0;i<Model.numMensMorris/3;i++){
-					for (int j=0;j<8;j++){
-						if (Model.getboardState(i, j).checkColor().equals(Color.RED)){
-							if(checkMillMoves(Model.getboardState(i, j))==true && placed==false){
-								millfromPoint.circle.setFill(Color.BLACK);
-								milltoPoint.circle.setFill(Color.RED);
-								placed=true;
-							}
-						}						
+			if(aimill==true){ //removing pieces
+				boolean removed=false;
+				int[] numBlueOnShell = new int[Model.numMensMorris/3];
+				for(int i=0;i<Model.numMensMorris/3;i++){
+					for (int j = 0; j < 8; j++) {
+						if (Model.getboardState(i, j).checkColor().equals(Color.BLUE)) { //check if spot is empty
+							numBlueOnShell[i]++;							
+						}
+
 					}
-
 				}
-				if (placed == false && millfromPoint != null){
-					millfromPoint.circle.setFill(Color.BLACK);
-					milltoPoint.circle.setFill(Color.RED);
-					placed=true;
+				int max=0;
+				int index=0;
+				for (int k =0; k<Model.numMensMorris/3; k++){
+					if (numBlueOnShell[k] > max){
+						max = numBlueOnShell[k];
+						index=k;
+					}
 				}
-				else{					
-					Alert alert = new Alert(AlertType.INFORMATION); // game ends if
-					// there is only 2
-					// pieces left from
-					// one player
-
-					alert.setTitle("Information Dialog");
-					alert.setHeaderText("CELEBRATION");
-					alert.setContentText("STALEMATE");
-					Model.t.setText("NO MOVES");
-					alert.showAndWait();
+				for (int j = 0; j < 8; j++) {
+					if(Model.getboardState(index, j).checkColor().equals(Color.BLUE) && removed==false){
+						Model.blueCount--;
+						Model.getboardState(index, j).circle.setFill(Color.BLACK);	
+						removed=true;
+					}
 				}
+			}
 
+			if (placed == false && millfromPoint != null){
+
+				millfromPoint.circle.setFill(Color.BLACK);
+				milltoPoint.circle.setFill(Color.RED);
+				placed=true;
 			}
 			StartTurn();
-
+			Model.t.setText("Blue's Turn");
+			Model.t2.setText("When you are finished click any point to trigger AI move.");
 		}
 		else{
 			if (Model.rmPiece) { // if rmPiece is set to true, run delete
 				Delete(p);
-				Model.t.setText("Phase 2: Click a piece to move");
-			} else if (secondclick == false) { // if on the first click
-				Model.t.setText("Phase 2: Click a piece to move");
-				Model.t2.setText("Phase 2");
+			} else if (secondclick == false) { // if on the first click				
 				if (p.circle.getFill().equals(Color.BLACK)) {
 					Alert alert = new Alert(AlertType.INFORMATION);
 					alert.setTitle("Information Dialog");
@@ -752,66 +750,42 @@ public class Controller { // controller for the MVC model
 		boolean millfound = false;
 		int i = x.getI();												//the location of x in the boardState array
 		int j = x.getJ();
-		if (j % 2 == 0) { // if point is a corner piece
-			if (j == 0) { // special case for 0 corner
-				if (Model.getboardState(i, j + 7).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j + 7),Color.RED)){
-						millfound = true;
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j + 7);
-					}
-					else{
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j + 7);
+		if (j % 2 == 0) { // if point is a corner piece, its technically impossible to form a 6 mens morris mill, but in 9 mens morris it would be possible
 
-					}
+			if (j == 0) { // special case for 0 corner
+				if (Model.getboardState(i, j + 7).checkColor().equals(Color.BLACK)) {					
+					millfromPoint = Model.getboardState(i, j);
+					milltoPoint = Model.getboardState(i, j + 7);					
 				}
 
 				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j + 1),Color.RED)){
-						millfound = true;
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j + 1);
-					}
-					else{
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j + 1);
-
-					}
+					millfromPoint = Model.getboardState(i, j);
+					milltoPoint = Model.getboardState(i, j + 1);					
 				}		
 
 			} else {
 
 				if (Model.getboardState(i, j -1).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j -1),Color.RED)){
-						millfound = true;
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j -1);
-					}
-					else{
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j -1);
-					}
+					millfromPoint = Model.getboardState(i, j);
+					milltoPoint = Model.getboardState(i, j -1);					
 				}
 
 				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j + 1),Color.RED)){
-						millfound = true;
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j + 1);
-					}
-					else{
-						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j + 1);
-					}
+					millfromPoint = Model.getboardState(i, j);
+					milltoPoint = Model.getboardState(i, j + 1);
+
 				}
 			}
 
 		}
+		/*
+		 * 4 cases for middle points : j = 1,3,5,7
+		 * for each case check if moving left or right will cause a mill in an adjacent row
+		 */
 		else{
-			if (j == 7) { // special case for 0 corner
+			if (j == 7) { 
 				if (Model.getboardState(i, j - 7).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j - 7),Color.RED)){
+					if(Model.getboardState(i, 1).checkColor().equals(Color.RED) && Model.getboardState(i, 2).checkColor().equals(Color.RED)){
 						millfound = true;
 						millfromPoint = Model.getboardState(i, j);
 						milltoPoint = Model.getboardState(i, j - 7);
@@ -824,7 +798,7 @@ public class Controller { // controller for the MVC model
 				}
 
 				if (Model.getboardState(i,j-1).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j - 1),Color.RED)){
+					if(Model.getboardState(i, 5).checkColor().equals(Color.RED) && Model.getboardState(i, 4).checkColor().equals(Color.RED)){
 						millfound = true;
 						millfromPoint = Model.getboardState(i, j);
 						milltoPoint = Model.getboardState(i, j - 1);
@@ -837,21 +811,22 @@ public class Controller { // controller for the MVC model
 				}		
 
 			}
-			else{
-				if (Model.getboardState(i, j -1).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j -1),Color.RED)){
+			if (j == 5) { 
+				if (Model.getboardState(i, j-1).checkColor().equals(Color.BLACK)) {
+					if(Model.getboardState(i, 3).checkColor().equals(Color.RED) && Model.getboardState(i, 2).checkColor().equals(Color.RED)){
 						millfound = true;
 						millfromPoint = Model.getboardState(i, j);
-						milltoPoint = Model.getboardState(i, j -1);
+						milltoPoint = Model.getboardState(i, j-1);
 					}
 					else{
 						millfromPoint = Model.getboardState(i, j);
 						milltoPoint = Model.getboardState(i, j -1);
+
 					}
 				}
 
 				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
-					if(Model.AIformedMill(Model.getboardState(i, j + 1),Color.RED)){
+					if(Model.getboardState(i, 7).checkColor().equals(Color.RED) && Model.getboardState(i, 0).checkColor().equals(Color.RED)){
 						millfound = true;
 						millfromPoint = Model.getboardState(i, j);
 						milltoPoint = Model.getboardState(i, j + 1);
@@ -859,43 +834,102 @@ public class Controller { // controller for the MVC model
 					else{
 						millfromPoint = Model.getboardState(i, j);
 						milltoPoint = Model.getboardState(i, j + 1);
+
+					}
+				}		
+
+			}
+			if (j == 3) { 
+				if (Model.getboardState(i, j-1).checkColor().equals(Color.BLACK)) {
+					if(Model.getboardState(i, 1).checkColor().equals(Color.RED) && Model.getboardState(i, 0).checkColor().equals(Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j-1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j -1);
+
 					}
 				}
-				if ((Model.numMensMorris/3)-1 > i){						//if not on outmost shell
-					if (Model.getboardState(i+1,j).checkColor().equals(Color.BLACK)){
-						if(Model.AIformedMill(Model.getboardState(i+1, j),Color.RED)){
-							millfound = true;
-							millfromPoint = Model.getboardState(i, j);
-							milltoPoint = Model.getboardState(i+1, j );
-						}
-						else{
-							millfromPoint = Model.getboardState(i, j);
-							milltoPoint = Model.getboardState(i+1, j);
 
-						}
+				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
+					if(Model.getboardState(i, 5).checkColor().equals(Color.RED) && Model.getboardState(i, 6).checkColor().equals(Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
+
+					}
+				}		
+
+			}
+			if (j == 1) { 
+				if (Model.getboardState(i, j-1).checkColor().equals(Color.BLACK)) {
+					if(Model.getboardState(i, 7).checkColor().equals(Color.RED) && Model.getboardState(i, 6).checkColor().equals(Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j-1);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j -1);
+
 					}
 				}
 
-				if (i>0){											//if not on inmost shell
-					if (Model.getboardState(i-1,j).checkColor().equals(Color.BLACK)){	
-						if(Model.AIformedMill(Model.getboardState(i-1, j),Color.RED)){
-							millfound = true;
-							millfromPoint = Model.getboardState(i, j);
-							milltoPoint = Model.getboardState(i-1, j);
-						}
-						else{
-							millfromPoint = Model.getboardState(i, j);
-							milltoPoint = Model.getboardState(i-1, j);
-
-						}
+				if (Model.getboardState(i,j+1).checkColor().equals(Color.BLACK)) {
+					if(Model.getboardState(i, 3).checkColor().equals(Color.RED) && Model.getboardState(i, 4).checkColor().equals(Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
 					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i, j + 1);
 
+					}
+				}		
+
+			}
+			if ((Model.numMensMorris/3)-1 > i){						//if not on outmost shell
+				if (Model.getboardState(i+1,j).checkColor().equals(Color.BLACK)){
+					if(Model.AIformedMill(Model.getboardState(i+1, j),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i+1, j );
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i+1, j);
+
+					}
+				}
+			}
+
+			if (i>0){											//if not on inmost shell
+				if (Model.getboardState(i-1,j).checkColor().equals(Color.BLACK)){	
+					if(Model.AIformedMill(Model.getboardState(i-1, j),Color.RED)){
+						millfound = true;
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i-1, j);
+					}
+					else{
+						millfromPoint = Model.getboardState(i, j);
+						milltoPoint = Model.getboardState(i-1, j);
+
+					}
 				}
 
 			}
-		}
 
-		return millfound;
-	}
+		}
+	
+
+	return millfound;
+}
 }
 

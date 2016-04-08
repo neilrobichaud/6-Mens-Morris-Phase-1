@@ -70,9 +70,7 @@ public class Model {
 /*
  * Hypothetically if point x was changed into color c, would a mill form? return true/false
  */
-	public static boolean AIformedMill(Point x,Color c) {// check if mill was formed
-													// with
-		// the last click
+	public static boolean AIformedMill(Point x,Color c) {		
 		boolean millfound = false;
 		int i = x.getI();
 		int j = x.getJ();
