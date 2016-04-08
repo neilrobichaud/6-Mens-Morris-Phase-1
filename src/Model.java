@@ -67,7 +67,9 @@ public class Model {
 	public static Point getboardState(int i, int j) {
 		return boardState[i][j];
 	}
-
+/*
+ * Hypothetically if point x was changed into color c, would a mill form? return true/false
+ */
 	public static boolean AIformedMill(Point x,Color c) {// check if mill was formed
 													// with
 		// the last click
@@ -126,7 +128,9 @@ public class Model {
 		return millfound;
 
 	}
-
+/*
+ * non hypothetical, checks if last click caused a mill to be formed
+ */
 	public static boolean formedMill(Point x) {// check if mill was formed with
 												// the last click
 		boolean millfound = false;
@@ -176,7 +180,7 @@ public class Model {
 					millfound=true;
 				}
 			}
-			if (boardState[i][j].checkColor().equals(boardState[i][j - 1].checkColor())
+			else if (boardState[i][j].checkColor().equals(boardState[i][j - 1].checkColor())
 					&& boardState[i][j].checkColor().equals(boardState[i][j + 1].checkColor())) {
 				millfound = true;
 				System.out.print("middle");

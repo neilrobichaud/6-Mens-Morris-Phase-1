@@ -64,8 +64,8 @@ public class Controller { // controller for the MVC model
 				Model.pickedcolor = "red";
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information Dialog");
-				alert.setHeaderText("New Game has started.");
-				alert.setContentText("Computer will start the game.");
+				alert.setHeaderText("New Player vs AI Game has started.");
+				alert.setContentText("Computer will start the game. \n Click to make computer place piece");
 				alert.showAndWait();
 			}
 
@@ -191,7 +191,7 @@ public class Controller { // controller for the MVC model
 
 	/*
 	 * all controller logic for a point in phase 1. Accepts cases for sandbox
-	 * mode and removing a piece
+	 * mode and removing a piece, and AI Game
 	 */
 	public static void pointclicked(Point p) { // if a point is clicked in phase
 		// 1 use this method
@@ -227,17 +227,21 @@ public class Controller { // controller for the MVC model
 			}
 
 		}
+		
 		/*
-		 * If a player forms a mill and needs to remove a piece of the opposite
-		 * color
+		 * Controller logic for AI game, Computer is always RED
+		 * 1. check if RED can form a mill
+		 * 2. check if RED can block a blue mill
+		 * 3. if none of the above, place a RED piece on a shell with most red pieces to increase likelihood of forming a mill.
 		 */
+
 		else {
 
 			if (Model.isAIgame == true && Model.PlayerTurn == false){ //if its an AI game and its reds turn
 				boolean placed = false;
 				boolean aimill = false;
-				for (int i = 0; i < Model.numMensMorris/3; i++) { // loop through
-					// boardstate
+				//first priority is to check if AI can form a mill
+				for (int i = 0; i < Model.numMensMorris/3; i++) { 
 					for (int j = 0; j < 8; j++) {
 						if (Model.getboardState(i, j).checkColor().equals(Color.BLACK)) { //check if spot is empty
 							if (Model.AIformedMill(Model.getboardState(i, j),Color.RED) == true && placed==false) {	//check if placing will form a mill 	
@@ -285,6 +289,7 @@ public class Controller { // controller for the MVC model
 					}
 
 				}
+				//check if RED can block a blue mill 2nd priority
 				if(placed==false){
 					for (int i = 0; i < Model.numMensMorris/3; i++) { // loop through
 						// boardstate
@@ -303,6 +308,7 @@ public class Controller { // controller for the MVC model
 
 					}
 				}
+				// count number of red and black on each shell, place red piece where more red are.
 				if(placed==false){
 					int[] numRedOnShell = new int[Model.numMensMorris/3];
 					int[] numBlackOnShell = new int[Model.numMensMorris/3];
@@ -344,17 +350,16 @@ public class Controller { // controller for the MVC model
 				}
 
 
-				// check for rows with possible millform, if not found check for
-				// blocking mills
+				/*
+				 * If a player forms a mill and needs to remove a piece of the opposite
+				 * color
+				 */
 			} else {
 				if (Model.rmPiece) {
 					Delete(p);
 				} else {
 
-					if (!(p.circle.getFill().equals(Color.BLACK))) { // if space
-						// is
-						// not
-						// black
+					if (!(p.circle.getFill().equals(Color.BLACK))) { // if space is not black
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setTitle("Information Dialog");
 						alert.setHeaderText("You cannot place one piece on top of another");
